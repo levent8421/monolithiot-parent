@@ -7,6 +7,7 @@
         <module>iot-repository</module>
         <module>iot-service</module>
         <module>iot-web</module>
+        <module>iot-user</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
