@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.monolithiot.iot.user.repository.UserMapper">
+    <sql id="columns">
+        u.id          u_id,
+        u.name        u_name,
+        u.password    u_password,
+        u.phone       u_phone,
+        u.email       u_email,
+        u.avatar      u_avatar,
+        u.gender      u_gender,
+        u.province    u_province,
+        u.city        u_city,
+        u.district    u_district,
+        u.address     u_address,
+        u.industry    u_industry,
+        u.create_time u_create_time,
+        u.update_time u_update_time,
+        u.deleted     u_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_user as u
+        where u.deleted = false
+    </sql>
+    <resultMap id="rm_base" type="com.monolithiot.iot.user.entity.User">
+        <id column="u_id" property="id"/>
+        <result column="u_name" property="name"/>
+        <result column="u_password" property="password"/>
+        <result column="u_phone" property="phone"/>
+        <result column="u_email" property="email"/>
+        <result column="u_avatar" property="avatar"/>
+        <result column="u_gender" property="gender"/>
+        <result column="u_province" property="province"/>
+        <result column="u_city" property="city"/>
+        <result column="u_district" property="district"/>
+        <result column="u_address" property="address"/>
+        <result column="u_industry" property="industry"/>
+        <result column="u_create_time" property="createTime"/>
+        <result column="u_update_time" property="updateTime"/>
+        <result column="u_deleted" property="deleted"/>
+    </resultMap>
+</mapper>

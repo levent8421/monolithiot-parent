@@ -17,12 +17,13 @@
     </parent>
     <groupId>com.monolithiot.iot</groupId>
     <artifactId>parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${sub-model-version}</version>
     <name>parent</name>
-    <description>Iot project for monolithiot</description>
+    <description>磐石物联 总工程</description>
     <packaging>pom</packaging>
     <properties>
         <java.version>1.8</java.version>
+        <sub-model-version>0.0.1-SNAPSHOT</sub-model-version>
     </properties>
     <profiles>
         <profile>

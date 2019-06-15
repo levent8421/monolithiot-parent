@@ -1,6 +1,7 @@
 package com.monolithiot.iot.commons.entity;
 
 import com.monolithiot.iot.commons.context.ApplicationConstants;
+import com.monolithiot.iot.commons.utils.DateTimeUtils;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -40,4 +41,19 @@ public abstract class AbstractEntity<IdType> {
      */
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
+
+    /**
+     * 初始化BaseEntity中的属性
+     */
+    public void init() {
+        updateTime = createTime = DateTimeUtils.now();
+        deleted = false;
+    }
+
+    /**
+     * 刷新更新时间
+     */
+    public void touch() {
+        updateTime = DateTimeUtils.now();
+    }
 }

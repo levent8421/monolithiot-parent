@@ -11,5 +11,16 @@
 
     <artifactId>iot-user-commons</artifactId>
     <description>用户服务的通用组件</description>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.monolithiot.iot</groupId>
+            <artifactId>iot-commons</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 </project>
