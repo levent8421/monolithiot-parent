@@ -2,6 +2,7 @@ package com.monolithiot.iot.user.repository;
 
 import com.monolithiot.iot.repository.AbstractMapper;
 import com.monolithiot.iot.user.entity.User;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,5 +14,6 @@ import org.springframework.stereotype.Repository;
  * @data 2019/6/15 0015
  */
 @Repository
+@Mapper
 public interface UserMapper extends AbstractMapper<User> {
 }

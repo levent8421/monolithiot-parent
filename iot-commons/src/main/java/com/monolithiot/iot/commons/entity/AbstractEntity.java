@@ -40,7 +40,7 @@ public abstract class AbstractEntity<IdType> {
      * 是否已经标记为删除
      */
     @Column(name = "deleted", nullable = false)
-    private boolean deleted;
+    private Boolean deleted;
 
     /**
      * 初始化BaseEntity中的属性

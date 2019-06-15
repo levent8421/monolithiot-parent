@@ -15,6 +15,7 @@
         <module>iot-user-commons</module>
         <module>iot-user-repository</module>
         <module>iot-user-service</module>
+        <module>iot-user-web</module>
     </modules>
 
 </project>

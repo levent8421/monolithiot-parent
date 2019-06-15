@@ -39,12 +39,12 @@
         <dependency>
             <groupId>com.monolithiot.iot</groupId>
             <artifactId>iot-commons</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${sub-model-version}</version>
         </dependency>
         <dependency>
             <groupId>com.monolithiot.iot</groupId>
             <artifactId>iot-repository</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${sub-model-version}</version>
         </dependency>
     </dependencies>
 </project>

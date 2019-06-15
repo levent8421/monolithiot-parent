@@ -1,0 +1,19 @@
+server:
+  port: 7002
+spring:
+  profiles:
+    active: @activationProfile@
+  application:
+    name: e-commerce-api
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+  freemarker:
+    suffix: .html
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+pagehelper:
+  helper-dialect: mysql
+mybatis:
+  mapper-locations: classpath:mappers/*.mapper.xml
+  type-aliases-package: com.monolithiot.iot.user.entity

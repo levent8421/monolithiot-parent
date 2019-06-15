@@ -17,7 +17,7 @@ public class ApplicationConstants {
          * 系统组件所在的包名
          * 系统启动后将会扫描该包下的所有合法组件类并注册为Spring组件
          */
-        public static final String CONPONENT_PACKAGE_NAME = "com.monolithiot.iot";
+        public static final String COMPONENT_PACKAGE_NAME = "com.monolithiot.iot";
     }
 
     /**
