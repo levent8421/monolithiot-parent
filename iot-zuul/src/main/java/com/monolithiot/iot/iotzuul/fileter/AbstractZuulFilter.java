@@ -3,6 +3,9 @@ package com.monolithiot.iot.iotzuul.fileter;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Create By leven ont 2019/6/16 22:23
  * Class Name :[AbstractZuulFilter]
@@ -45,5 +48,22 @@ public abstract class AbstractZuulFilter extends ZuulFilter {
      */
     RequestContext currentContext() {
         return RequestContext.getCurrentContext();
+    }
+
+    /**
+     * 获取请求参数
+     */
+    Map<String, List<String>> getRequestParams() {
+        return currentContext().getRequestQueryParams();
+    }
+
+    /**
+     * 获取请求头
+     *
+     * @param name 请求头名称
+     * @return 请求头值
+     */
+    String getHeader(String name) {
+        return currentContext().getRequest().getHeader(name);
     }
 }

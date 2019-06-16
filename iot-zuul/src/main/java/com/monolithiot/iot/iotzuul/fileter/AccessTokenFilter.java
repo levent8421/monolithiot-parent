@@ -1,6 +1,5 @@
 package com.monolithiot.iot.iotzuul.fileter;
 
-import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -33,13 +32,13 @@ public class AccessTokenFilter extends AbstractZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        return !isSendZuulResponse();
+        return isSendZuulResponse();
     }
 
     @Override
     public Object run() throws ZuulException {
-        RequestContext context = currentContext();
-
+        log.debug("Request Params= [{}]", getRequestParams());
+        log.debug("Header (User-Agent) = [{}]", getHeader("User-Agent"));
         return null;
     }
 }
