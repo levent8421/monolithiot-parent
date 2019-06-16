@@ -10,6 +10,11 @@ package com.monolithiot.iot.commons.context;
  */
 public class ApplicationConstants {
     /**
+     * 系统默认编码
+     */
+    public static final String DEFAULT_CHARSET = "UTF-8";
+
+    /**
      * 上下文等系统运行常量
      */
     public static class Context {
