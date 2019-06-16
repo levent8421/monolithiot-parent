@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: eureka-server
+  profiles:
+    active: @activationProfile@
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:${server.port}/eureka
+  instance:
+    lease-expiration-duration-in-seconds: 60
+  server:
+    eviction-interval-timer-in-ms: 60000
+    enable-self-preservation: false
