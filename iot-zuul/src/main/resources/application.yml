@@ -20,3 +20,6 @@ zuul:
     user:
       path: /user/**
       serviceId: user-service
+auth:
+  authorizedPath:
+    - /user/api/open/**

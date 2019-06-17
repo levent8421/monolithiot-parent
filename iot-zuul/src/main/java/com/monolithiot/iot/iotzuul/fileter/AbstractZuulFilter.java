@@ -1,7 +1,12 @@
 package com.monolithiot.iot.iotzuul.fileter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.monolithiot.iot.commons.context.ApplicationConstants;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import com.netflix.zuul.exception.ZuulException;
+import org.apache.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -65,5 +70,47 @@ public abstract class AbstractZuulFilter extends ZuulFilter {
      */
     String getHeader(String name) {
         return currentContext().getRequest().getHeader(name);
+    }
+
+    /**
+     * 获取请求路径
+     *
+     * @return 请求路径
+     */
+    String getRequestPath() {
+        return currentContext().getRequest().getRequestURI();
+    }
+
+    /**
+     * 发送响应数据 同时设置[sendZuulResponse]为false
+     *
+     * @param statusCode  响应码
+     * @param data        响应数据
+     * @param contentType 响应ContentType
+     */
+    void sendResponse(int statusCode, String data, String contentType) {
+        RequestContext context = currentContext();
+        context.setSendZuulResponse(false);
+
+        context.setResponseStatusCode(statusCode);
+        context.setResponseBody(data);
+        context.getResponse().setContentType(contentType);
+    }
+
+    /**
+     * 发送JSON类型的响应数据
+     *
+     * @param statusCode 状态码
+     * @param jsonObject 发送的对象
+     */
+    void sendJsonResponse(int statusCode, Object jsonObject, ObjectMapper objectMapper) throws ZuulException {
+        String data;
+        try {
+            data = objectMapper.writeValueAsString(jsonObject);
+        } catch (JsonProcessingException e) {
+            throw new ZuulException(e, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                    "Unable write object [" + jsonObject + "] as String");
+        }
+        sendResponse(statusCode, data, ApplicationConstants.Http.CONTENT_TYPE_JSON);
     }
 }

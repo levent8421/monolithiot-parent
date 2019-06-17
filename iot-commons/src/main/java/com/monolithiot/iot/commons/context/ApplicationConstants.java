@@ -52,4 +52,14 @@ public class ApplicationConstants {
          */
         public static final String GENERATOR_JDBC = "JDBC";
     }
+
+    /**
+     * Http相关常量
+     */
+    public static class Http {
+        /**
+         * Json Content Type
+         */
+        public static final String CONTENT_TYPE_JSON = "application/json;charset=utf-8";
+    }
 }
