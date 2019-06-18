@@ -64,7 +64,7 @@ public class ApplicationConstants {
     }
 
     /**
-     * 又有相关常量
+     * 路由相关常量
      */
     public static class Router {
         /**
