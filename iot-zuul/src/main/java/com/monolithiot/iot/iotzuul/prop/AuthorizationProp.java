@@ -22,4 +22,8 @@ public class AuthorizationProp {
      * 已授权路径
      */
     private List<String> authorizedPath;
+    /**
+     * 登录地址
+     */
+    private String loginPath;
 }

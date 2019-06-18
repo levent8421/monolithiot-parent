@@ -1,10 +1,6 @@
 package com.monolithiot.iot.user.web.controller.open;
 
-import com.monolithiot.iot.commons.vo.GeneralResult;
-import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.service.general.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,17 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @author leven
  */
 @RestController
-@RequestMapping("/api/open/user")
+@RequestMapping("/open/user")
 public class OpenUserController {
     private final UserService userService;
 
     public OpenUserController(UserService userService) {
         this.userService = userService;
-    }
-
-    @GetMapping("/{id}")
-    public GeneralResult<User> detail(@PathVariable("id") Integer id) {
-        User user = userService.get(id);
-        return GeneralResult.ok(user);
     }
 }

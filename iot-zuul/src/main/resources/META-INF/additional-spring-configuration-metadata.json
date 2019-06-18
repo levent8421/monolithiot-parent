@@ -4,6 +4,11 @@
       "name": "auth.authorizedPath",
       "type": "java.lang.String",
       "description": "已授权的路径."
+    },
+    {
+      "name": "auth.loginPath",
+      "type": "java.lang.String",
+      "description": "用户登录接口地址."
     }
   ]
 }

@@ -3,6 +3,7 @@ package com.monolithiot.iot.user.repository;
 import com.monolithiot.iot.repository.AbstractMapper;
 import com.monolithiot.iot.user.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -16,4 +17,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Mapper
 public interface UserMapper extends AbstractMapper<User> {
+    /**
+     * 通过登录名查询用户
+     *
+     * @param loginName 登录名
+     * @return 用户
+     */
+    User selectByLoginName(@Param("loginName") String loginName);
 }

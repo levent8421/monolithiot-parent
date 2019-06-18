@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Create By leven ont 2019/6/16 15:42
@@ -17,6 +18,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @author leven
  */
 @EnableDiscoveryClient
+@EnableFeignClients
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class IotZuulApplication {
     public static void main(String[] args) {

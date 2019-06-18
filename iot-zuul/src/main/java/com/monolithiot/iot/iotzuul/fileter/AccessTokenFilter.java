@@ -1,15 +1,23 @@
 package com.monolithiot.iot.iotzuul.fileter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.monolithiot.iot.commons.dto.UserLoginDto;
+import com.monolithiot.iot.commons.token.AccessToken;
+import com.monolithiot.iot.commons.utils.HttpRequestUtils;
 import com.monolithiot.iot.commons.vo.GeneralResult;
+import com.monolithiot.iot.iotzuul.encrypt.AccessTokenEncoder;
+import com.monolithiot.iot.iotzuul.feign.UserFeignClient;
 import com.monolithiot.iot.iotzuul.prop.AuthorizationProp;
 import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PathMatcher;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Create By leven ont 2019/6/16 22:09
@@ -26,16 +34,26 @@ public class AccessTokenFilter extends AbstractZuulFilter {
      * 过滤器排序
      */
     private static final int FILTER_ORDER = 100;
+    /**
+     * 令牌字符串前缀
+     */
+    private static final String ACCESS_TOKEN_PREFIX = "token/";
     private final AuthorizationProp authorizationProp;
     private final PathMatcher pathMatcher;
     private final ObjectMapper objectMapper;
+    private final UserFeignClient userFeignClient;
+    private final AccessTokenEncoder accessTokenEncoder;
 
     public AccessTokenFilter(AuthorizationProp authorizationProp,
                              PathMatcher pathMatcher,
-                             ObjectMapper objectMapper) {
+                             ObjectMapper objectMapper,
+                             UserFeignClient userFeignClient,
+                             AccessTokenEncoder accessTokenEncoder) {
         this.authorizationProp = authorizationProp;
         this.pathMatcher = pathMatcher;
         this.objectMapper = objectMapper;
+        this.userFeignClient = userFeignClient;
+        this.accessTokenEncoder = accessTokenEncoder;
     }
 
     @Override
@@ -56,6 +74,11 @@ public class AccessTokenFilter extends AbstractZuulFilter {
     @Override
     public Object run() throws ZuulException {
         final String requestPath = getRequestPath();
+        if (doLoginFilter(requestPath)) {
+            //执行登陆操作
+            //若该路径不是登录路径 则继续向下执行
+            return null;
+        }
         if (isAuthorized(requestPath)) {
             log.debug("Request [{}] is early authorized!", requestPath);
         } else {
@@ -94,4 +117,42 @@ public class AccessTokenFilter extends AbstractZuulFilter {
         return false;
     }
 
+    /**
+     * 执行登陆拦截
+     * 当当前路径为配置的登录路径并且请求方式为Post时，执行登陆拦截，并返回true
+     *
+     * @param path 请求路径
+     * @return 是否成功拦截
+     * @throws ZuulException Zuu;异常
+     */
+    private boolean doLoginFilter(String path) throws ZuulException {
+        final String loginPath = authorizationProp.getLoginPath();
+        final HttpServletRequest request = currentContext().getRequest();
+        final String method = request.getMethod();
+        if (pathMatcher.match(loginPath, path) && HttpMethod.POST.matches(method)) {
+            final String requestBody = HttpRequestUtils.stringBody(request);
+            doLogin(requestBody);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 执行登陆操作
+     *
+     * @param requestBody 请求体
+     * @throws ZuulException Zuu;异常
+     */
+    private void doLogin(String requestBody) throws ZuulException {
+        UserLoginDto userLoginDto = UserLoginDto.fromJson(requestBody);
+        final GeneralResult<AccessToken> res = userFeignClient.login(userLoginDto);
+        if (Objects.equals(res.getCode(), HttpStatus.SC_OK)) {
+            final AccessToken accessToken = res.getData();
+            final String tokenStr = accessTokenEncoder.encode(accessToken.asJson(), ACCESS_TOKEN_PREFIX);
+            sendJsonResponse(HttpStatus.SC_OK, GeneralResult.ok(tokenStr), objectMapper);
+        } else {
+            sendJsonResponse(res.getCode(), res, objectMapper);
+        }
+    }
 }

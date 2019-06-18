@@ -8,6 +8,8 @@
         <module>iot-service</module>
         <module>iot-web</module>
         <module>iot-user</module>
+        <module>iot-eureka</module>
+        <module>iot-zuul</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -17,7 +19,7 @@
     </parent>
     <groupId>com.monolithiot.iot</groupId>
     <artifactId>parent</artifactId>
-    <version>${sub-model-version}</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>parent</name>
     <description>磐石物联 总工程</description>
     <packaging>pom</packaging>

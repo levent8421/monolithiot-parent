@@ -41,4 +41,8 @@
         <result column="u_update_time" property="updateTime"/>
         <result column="u_deleted" property="deleted"/>
     </resultMap>
+    <select id="selectByLoginName" resultMap="rm_base">
+        <include refid="select"/>
+        and (u.email=#{loginName} or u.phone=#{loginName} or u.name=#{loginName})
+    </select>
 </mapper>

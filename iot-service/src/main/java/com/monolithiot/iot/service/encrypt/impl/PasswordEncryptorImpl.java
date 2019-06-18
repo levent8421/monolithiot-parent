@@ -1,6 +1,6 @@
-package com.monolithiot.iot.iotzuul.encrypt.impl;
+package com.monolithiot.iot.service.encrypt.impl;
 
-import com.monolithiot.iot.iotzuul.encrypt.PasswordEncryptor;
+import com.monolithiot.iot.service.encrypt.PasswordEncryptor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;
 

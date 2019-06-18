@@ -1,4 +1,4 @@
-package com.monolithiot.iot.iotzuul.encrypt;
+package com.monolithiot.iot.service.encrypt;
 
 /**
  * Create by 郭文梁 2019/5/21 0021 13:57

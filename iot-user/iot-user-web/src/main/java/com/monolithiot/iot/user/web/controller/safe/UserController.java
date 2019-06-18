@@ -1,9 +1,8 @@
-package com.monolithiot.iot.user.web.controller;
+package com.monolithiot.iot.user.web.controller.safe;
 
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.service.general.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author leven
  */
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
     private final UserService userService;
 
