@@ -30,4 +30,29 @@ public class HttpRequestUtils {
             throw new InternalServerErrorException("Could not get inputStream from Request!", e);
         }
     }
+
+    /**
+     * 从请求中获取登录名
+     *
+     * @param request 请求
+     * @return 登录名
+     */
+    public static String obtainLoginNameFromRequest(HttpServletRequest request) {
+        return request.getHeader(ApplicationConstants.Router.LOGIN_NAME_HEADER_NAME);
+    }
+
+    /**
+     * 从请求中获取用户ID
+     *
+     * @param request 请求
+     * @return 用户ID
+     */
+    public static Integer obtainUserIdFromtRequest(HttpServletRequest request) {
+        final String idStr = request.getHeader(ApplicationConstants.Router.USER_ID_HEADER_NAME);
+        try {
+            return Integer.parseInt(idStr);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 }

@@ -1,13 +1,16 @@
 package com.monolithiot.iot.iotzuul.fileter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.monolithiot.iot.commons.context.ApplicationConstants;
 import com.monolithiot.iot.commons.dto.UserLoginDto;
 import com.monolithiot.iot.commons.token.AccessToken;
 import com.monolithiot.iot.commons.utils.HttpRequestUtils;
+import com.monolithiot.iot.commons.utils.TextUtils;
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.iotzuul.encrypt.AccessTokenEncoder;
 import com.monolithiot.iot.iotzuul.feign.UserFeignClient;
 import com.monolithiot.iot.iotzuul.prop.AuthorizationProp;
+import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
@@ -83,7 +86,12 @@ public class AccessTokenFilter extends AbstractZuulFilter {
             log.debug("Request [{}] is early authorized!", requestPath);
         } else {
             log.debug("Request [{}] is not authorized!", requestPath);
-            sendPermissionDeniedMsg();
+            AccessToken accessToken = checkAccessToken(currentContext().getRequest());
+            if (accessToken == null) {
+                sendPermissionDeniedMsg();
+            } else {
+                writeAccessToken2Request(accessToken);
+            }
         }
         return null;
     }
@@ -154,5 +162,81 @@ public class AccessTokenFilter extends AbstractZuulFilter {
         } else {
             sendJsonResponse(res.getCode(), res, objectMapper);
         }
+    }
+
+    /**
+     * 检查请求是否携带有有效的令牌,若存在 则返回，否则返回null
+     *
+     * @param request 请求对象
+     * @return 令牌是否有效
+     */
+    private AccessToken checkAccessToken(HttpServletRequest request) {
+        String token = request.getHeader(authorizationProp.getTokenHeaderName());
+        if (TextUtils.isTrimedEmpty(token)) {
+            token = request.getParameter(authorizationProp.getTokenParamName());
+        }
+        if (TextUtils.isTrimedEmpty(token)) {
+            return null;
+        }
+        AccessToken accessToken = unpackAccessToken(token);
+        if (accessToken == null) {
+            return null;
+        }
+        if (!validateAccessToken(accessToken)) {
+            return null;
+        }
+        log.debug("Request Access Token [{}]", accessToken);
+        return accessToken;
+    }
+
+    /**
+     * 检查令牌的有效性
+     *
+     * @param accessToken 令牌对象
+     * @return 是否有效
+     */
+    private boolean validateAccessToken(AccessToken accessToken) {
+        if (accessToken.getCreateTime() == null || accessToken.getExpireIn() == null) {
+            return false;
+        }
+        if (accessToken.getCreateTime() + accessToken.getExpireIn() < System.currentTimeMillis()) {
+            //令牌已过期
+            return false;
+        }
+        //令牌角色
+        return Objects.equals(accessToken.getRole(), AccessToken.ROLE_USER);
+    }
+
+    /**
+     * 从token中解析出AccessToken对象
+     *
+     * @param token 令牌字符串
+     * @return 令牌对象
+     */
+    private AccessToken unpackAccessToken(String token) {
+        if (token.length() <= ACCESS_TOKEN_PREFIX.length()) {
+            log.warn("Invalidate token length [{}], length [{}]", token, token.length());
+            return null;
+        }
+        String tokenStr = token.substring(ACCESS_TOKEN_PREFIX.length());
+        try {
+            return accessTokenEncoder.decode(tokenStr, AccessToken.class);
+        } catch (Throwable e) {
+            log.warn("Unable to unpack tokenString [{}]", tokenStr, e);
+        }
+        return null;
+    }
+
+    /**
+     * 写令牌内容到路由转发的请求中，供应用服务使用
+     *
+     * @param accessToken 令牌
+     */
+    private void writeAccessToken2Request(AccessToken accessToken) {
+        RequestContext context = currentContext();
+        context.addZuulRequestHeader(ApplicationConstants.Router.LOGIN_NAME_HEADER_NAME,
+                accessToken.getLoginName());
+        context.addZuulRequestHeader(ApplicationConstants.Router.USER_ID_HEADER_NAME,
+                String.valueOf(accessToken.getUserId()));
     }
 }

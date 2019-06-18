@@ -62,4 +62,18 @@ public class ApplicationConstants {
          */
         public static final String CONTENT_TYPE_JSON = "application/json;charset=utf-8";
     }
+
+    /**
+     * 又有相关常量
+     */
+    public static class Router {
+        /**
+         * 路由设置的用户登陆名Header名称
+         */
+        public static final String LOGIN_NAME_HEADER_NAME = "Zuul-Router-Login-Name";
+        /**
+         * 路由设置的用户ID Header名称
+         */
+        public static final String USER_ID_HEADER_NAME = "Zuul-Router-User-Id";
+    }
 }

@@ -26,4 +26,12 @@ public class AuthorizationProp {
      * 登录地址
      */
     private String loginPath;
+    /**
+     * 令牌Header名称
+     */
+    private String tokenHeaderName = "Api-Access-Token";
+    /**
+     * 令牌Query String 参数名称
+     */
+    private String tokenParamName = "access-token";
 }

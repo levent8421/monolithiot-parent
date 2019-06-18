@@ -1,12 +1,16 @@
 package com.monolithiot.iot.user.web.controller.safe;
 
+import com.monolithiot.iot.commons.utils.HttpRequestUtils;
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.service.general.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Create By leven ont 2019/6/15 23:31
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -24,8 +29,17 @@ public class UserController {
         this.userService = userService;
     }
 
+    /**
+     * 获取用户详细信息
+     *
+     * @param id      ID
+     * @param request 请求
+     * @return GR
+     */
     @GetMapping("/{id}")
-    public GeneralResult<User> detail(@PathVariable("id") Integer id) {
+    public GeneralResult<User> detail(@PathVariable("id") Integer id, HttpServletRequest request) {
+        log.debug("User Id [{}]", HttpRequestUtils.obtainUserIdFromtRequest(request));
+        log.debug("User Login Name [{}]", HttpRequestUtils.obtainLoginNameFromRequest(request));
         User user = userService.get(id);
         return GeneralResult.ok(user);
     }
