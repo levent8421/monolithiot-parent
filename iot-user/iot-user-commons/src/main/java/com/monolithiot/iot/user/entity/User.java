@@ -20,6 +20,18 @@ import javax.persistence.Table;
 @Data
 public class User extends AbstractIntegerIdEntity {
     /**
+     * 性别：未知
+     */
+    public static final int GENDER_UNKNOWN = 0x00;
+    /**
+     * 性别：男性
+     */
+    public static final int GENDER_MALE = 0x01;
+    /**
+     * 性别：女性
+     */
+    public static final int GENDER_FEMALE = 0x02;
+    /**
      * 用户名
      */
     @Column(name = "name", nullable = false)

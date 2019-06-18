@@ -24,4 +24,16 @@ public interface UserMapper extends AbstractMapper<User> {
      * @return 用户
      */
     User selectByLoginName(@Param("loginName") String loginName);
+
+    /**
+     * 通过用户名或电话或邮箱查询用户
+     *
+     * @param name  用户名
+     * @param phone 电话
+     * @param email 邮箱
+     * @return User
+     */
+    User selectByNameOrPhoneOrEmail(@Param("name") String name,
+                                    @Param("phone") String phone,
+                                    @Param("email") String email);
 }

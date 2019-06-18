@@ -45,4 +45,8 @@
         <include refid="select"/>
         and (u.email=#{loginName} or u.phone=#{loginName} or u.name=#{loginName})
     </select>
+    <select id="selectByNameOrPhoneOrEmail" resultMap="rm_base">
+        <include refid="select"/>
+        and (u.name=#{name} or u.phone=#{phone} or u.email=#{email})
+    </select>
 </mapper>

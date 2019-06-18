@@ -10,6 +10,7 @@ import com.monolithiot.iot.user.service.general.UserService;
 import com.monolithiot.iot.web.advice.AbstractEntityController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -20,7 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @author 郭文梁
  * @data 2019/6/18 0018
  */
-@RestController("/api/user")
+@RestController
+@RequestMapping("/api/user")
 public class ApiUserController extends AbstractEntityController<User> {
     private final UserService userService;
 

@@ -8,8 +8,11 @@ import com.monolithiot.iot.service.encrypt.PasswordEncryptor;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.repository.UserMapper;
 import com.monolithiot.iot.user.service.general.UserService;
+import com.monolithiot.iot.user.service.general.listener.UserRegisterListener;
 import com.monolithiot.iot.user.token.UserAccessToken;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * Create by 郭文梁 2019/6/15 0015 17:21
@@ -41,7 +44,19 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
         if (user == null) {
             throw new BadRequestException("用户名或密码错误");
         }
+        checkUserPassword(user, param.getPassword());
         return UserAccessToken.fromUser(user, DEFAULT_ACCESS_TOKEN_EXPIRE_IN);
+    }
+
+    @Override
+    public User register(User user, UserRegisterListener listener) {
+        checkUserExists(user);
+        String password = passwordEncryptor.encode(user.getPassword());
+        user.setPassword(password);
+        user.setGender(User.GENDER_UNKNOWN);
+        final User saveRes = save(user);
+        listener.onRegister(saveRes);
+        return saveRes;
     }
 
     /**
@@ -53,6 +68,26 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     private void checkUserPassword(User user, String password) {
         if (!passwordEncryptor.matches(user.getPassword(), password)) {
             throw new BadRequestException("用户名或密码错误");
+        }
+    }
+
+    /**
+     * 检查用户是否已经被注册
+     *
+     * @param user 用户
+     */
+    private void checkUserExists(User user) {
+        User existsUser = userMapper.selectByNameOrPhoneOrEmail(user.getName(), user.getPhone(), user.getEmail());
+        if (existsUser != null) {
+            if (Objects.equals(existsUser.getName(), user.getName())) {
+                throw new BadRequestException("用户名已被注册!");
+            }
+            if (Objects.equals(existsUser.getPhone(), user.getPhone())) {
+                throw new BadRequestException("电话号已被注册!");
+            }
+            if (Objects.equals(existsUser.getEmail(), user.getEmail())) {
+                throw new BadRequestException("邮箱已被注册!");
+            }
         }
     }
 }

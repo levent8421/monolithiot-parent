@@ -5,6 +5,7 @@ import com.monolithiot.iot.commons.exception.InternalServerErrorException;
 import com.monolithiot.iot.commons.exception.PermissionDeniedException;
 import com.monolithiot.iot.commons.exception.ResourceNotFoundException;
 import com.monolithiot.iot.commons.vo.GeneralResult;
+import com.monolithiot.iot.user.context.UserServiceConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @data 2019/4/20 0020
  */
 @Slf4j
-@ControllerAdvice(basePackages = "com.monolithiot.iot.user.web.controller.api")
+@ControllerAdvice(basePackages = UserServiceConstants.Context.API_CONTROLLER_PACKAGE)
 public class ApiExceptionControllerAdvice {
     /**
      * 处理ResourceNotFoundException异常

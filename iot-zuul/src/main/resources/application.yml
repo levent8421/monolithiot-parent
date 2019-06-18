@@ -22,5 +22,5 @@ zuul:
       serviceId: user-service
 auth:
   authorizedPath:
-    - /user/api/open/**
+    - /user/open/**
   loginPath: /user/login
