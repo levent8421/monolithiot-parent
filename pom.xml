@@ -10,6 +10,7 @@
         <module>iot-user</module>
         <module>iot-eureka</module>
         <module>iot-zuul</module>
+        <module>iot-notification</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
