@@ -11,6 +11,68 @@
 
     <artifactId>iot-notification</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.monolithiot.iot</groupId>
+            <artifactId>iot-commons</artifactId>
+            <version>${sub-model-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.monolithiot.iot</groupId>
+            <artifactId>iot-repository</artifactId>
+            <version>${sub-model-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.monolithiot.iot</groupId>
+            <artifactId>iot-service</artifactId>
+            <version>${sub-model-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.monolithiot.iot</groupId>
+            <artifactId>iot-web</artifactId>
+            <version>${sub-model-version}</version>
+        </dependency>
+    </dependencies>
 
+    <build>
+        <finalName>monolithiot-notification</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
