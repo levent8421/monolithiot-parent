@@ -43,6 +43,8 @@ public class SmsVerificationCodeController extends AbstractEntityController<SmsV
      */
     @PutMapping("/pre-send")
     public GeneralResult<SmsPreSendVo> preSend(@RequestBody SmsSendParam param) {
+        ParamChecker.notNull(param, BadRequestException.class, "参数未传");
+        ParamChecker.notEmpty(param.getTarget(), BadRequestException.class, "发送目标必填");
         SmsPreSendVo res = smsVerificationCodeService.preSend(param.getTarget());
         return GeneralResult.ok(res);
     }

@@ -3,6 +3,7 @@ package com.monolithiot.iot.notification.controller.api;
 import com.monolithiot.iot.commons.exception.BadRequestException;
 import com.monolithiot.iot.commons.utils.ParamChecker;
 import com.monolithiot.iot.commons.vo.GeneralResult;
+import com.monolithiot.iot.commons.vo.notification.VerifySmsCodeParam;
 import com.monolithiot.iot.notification.entity.SmsVerificationCode;
 import com.monolithiot.iot.notification.service.SmsVerificationCodeService;
 import com.monolithiot.iot.web.advice.AbstractEntityController;
@@ -41,7 +42,7 @@ public class ApiSmsVerificationCodeController extends AbstractEntityController<S
      * @return 验证结果 GR
      */
     @PostMapping("/verify")
-    public GeneralResult<Boolean> verify(@RequestBody SmsVerificationCode param) {
+    public GeneralResult<Boolean> verify(@RequestBody VerifySmsCodeParam param) {
         checkVerifyParam(param);
         boolean res = smsVerificationCodeService.verify(param.getTraceNo(), param.getVerificationCode());
         return GeneralResult.ok(res);
@@ -52,7 +53,7 @@ public class ApiSmsVerificationCodeController extends AbstractEntityController<S
      *
      * @param param 参数
      */
-    private void checkVerifyParam(SmsVerificationCode param) {
+    private void checkVerifyParam(VerifySmsCodeParam param) {
         final Class<BadRequestException> ex = BadRequestException.class;
         ParamChecker.notNull(param, ex, "参数未传");
         ParamChecker.notEmpty(param.getTraceNo(), ex, "记录号必填");

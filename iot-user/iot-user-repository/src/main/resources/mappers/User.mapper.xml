@@ -47,6 +47,7 @@
     </select>
     <select id="selectByNameOrPhoneOrEmail" resultMap="rm_base">
         <include refid="select"/>
-        and (u.name=#{name} or u.phone=#{phone} or u.email=#{email})
+        and ((u.name is not null and u.name=#{name}) or (u.phone is not null and u.phone=#{phone}) or (u.email is not
+        null and u.email=#{email}))
     </select>
 </mapper>

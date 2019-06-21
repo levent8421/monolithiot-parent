@@ -2,17 +2,21 @@ package com.monolithiot.iot.user.service.general.impl;
 
 import com.monolithiot.iot.commons.dto.UserLoginDto;
 import com.monolithiot.iot.commons.exception.BadRequestException;
+import com.monolithiot.iot.commons.exception.InternalServerErrorException;
 import com.monolithiot.iot.commons.token.AccessToken;
+import com.monolithiot.iot.commons.utils.TextUtils;
+import com.monolithiot.iot.commons.vo.GeneralResult;
+import com.monolithiot.iot.commons.vo.notification.VerifySmsCodeParam;
 import com.monolithiot.iot.service.basic.impl.AbstractServiceImpl;
 import com.monolithiot.iot.service.encrypt.PasswordEncryptor;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.repository.UserMapper;
+import com.monolithiot.iot.user.service.feign.SmsVerificationCodeFeignClient;
 import com.monolithiot.iot.user.service.general.UserService;
 import com.monolithiot.iot.user.service.listener.UserRegisterListener;
 import com.monolithiot.iot.user.token.UserAccessToken;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 /**
  * Create by 郭文梁 2019/6/15 0015 17:21
@@ -30,12 +34,15 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     private static final long DEFAULT_ACCESS_TOKEN_EXPIRE_IN = 20L * 7L * 24L * 60L * 60L * 1000L;
     private final UserMapper userMapper;
     private final PasswordEncryptor passwordEncryptor;
+    private final SmsVerificationCodeFeignClient smsVerificationCodeFeignClient;
 
     public UserServiceImpl(UserMapper mapper,
-                           PasswordEncryptor passwordEncryptor) {
+                           PasswordEncryptor passwordEncryptor,
+                           SmsVerificationCodeFeignClient smsVerificationCodeFeignClient) {
         super(mapper);
         this.userMapper = mapper;
         this.passwordEncryptor = passwordEncryptor;
+        this.smsVerificationCodeFeignClient = smsVerificationCodeFeignClient;
     }
 
     @Override
@@ -79,13 +86,13 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     private void checkUserExists(User user) {
         User existsUser = userMapper.selectByNameOrPhoneOrEmail(user.getName(), user.getPhone(), user.getEmail());
         if (existsUser != null) {
-            if (Objects.equals(existsUser.getName(), user.getName())) {
+            if (TextUtils.compareIgnoreCase(existsUser.getName(), user.getName())) {
                 throw new BadRequestException("用户名已被注册!");
             }
-            if (Objects.equals(existsUser.getPhone(), user.getPhone())) {
+            if (TextUtils.compareIgnoreCase(existsUser.getPhone(), user.getPhone())) {
                 throw new BadRequestException("电话号已被注册!");
             }
-            if (Objects.equals(existsUser.getEmail(), user.getEmail())) {
+            if (TextUtils.compareIgnoreCase(existsUser.getEmail(), user.getEmail())) {
                 throw new BadRequestException("邮箱已被注册!");
             }
         }
@@ -93,7 +100,30 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
 
     @Override
     public User registerWithPhone(User user, String notificationTraceId, String verificationCode) {
-        //TODO 实现手机号注册逻辑
-        return null;
+        checkUserExists(user);
+        if (!checkSmsVerifyCode(verificationCode, notificationTraceId)) {
+            throw new BadRequestException("验证码错误");
+        }
+        user.setPassword(passwordEncryptor.encode(user.getPassword()));
+        user.setGender(User.GENDER_UNKNOWN);
+        return save(user);
+    }
+
+    /**
+     * 检查短信验证码
+     *
+     * @param code    验证码
+     * @param traceNo 记录号
+     * @return 是否匹配
+     */
+    private boolean checkSmsVerifyCode(String code, String traceNo) {
+        VerifySmsCodeParam param = new VerifySmsCodeParam();
+        param.setTraceNo(traceNo);
+        param.setVerificationCode(code);
+        final GeneralResult<Boolean> res = smsVerificationCodeFeignClient.verifySmsCode(param);
+        if (res.getCode() != HttpStatus.OK.value()) {
+            throw new InternalServerErrorException(res.getMsg());
+        }
+        return res.getData();
     }
 }

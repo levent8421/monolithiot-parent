@@ -25,5 +25,9 @@ public class UserServiceConstants {
          * 有访问限制的API Controller包
          */
         public static final String SAFE_CONTROLLER_PACKAGE = "com.monolithiot.iot.user.web.controller.open";
+        /**
+         * Feign client 包名
+         */
+        public static final String FEIGN_CLIENT_PACKAGE = "com.monolithiot.iot.user.service.feign";
     }
 }

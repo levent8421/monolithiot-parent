@@ -1,5 +1,6 @@
 package com.monolithiot.iot.iotzuul.feign;
 
+import com.monolithiot.iot.commons.context.ApplicationConstants;
 import com.monolithiot.iot.commons.dto.UserLoginDto;
 import com.monolithiot.iot.commons.token.AccessToken;
 import com.monolithiot.iot.commons.vo.GeneralResult;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author 郭文梁
  * @data 2019/6/18 0018
  */
-@FeignClient(value = "user-service")
+@FeignClient(ApplicationConstants.Service.USER)
 @RequestMapping("/api")
 public interface UserFeignClient {
     /**
