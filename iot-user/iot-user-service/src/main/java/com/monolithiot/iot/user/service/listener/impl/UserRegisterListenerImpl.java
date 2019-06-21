@@ -1,7 +1,7 @@
-package com.monolithiot.iot.user.service.general.listener.impl;
+package com.monolithiot.iot.user.service.listener.impl;
 
 import com.monolithiot.iot.user.entity.User;
-import com.monolithiot.iot.user.service.general.listener.UserRegisterListener;
+import com.monolithiot.iot.user.service.listener.UserRegisterListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +18,5 @@ import org.springframework.stereotype.Component;
 public class UserRegisterListenerImpl implements UserRegisterListener {
     @Override
     public void onRegister(User user) {
-        log.debug("User Register : [{}]", user);
     }
 }

@@ -1,4 +1,4 @@
-package com.monolithiot.iot.user.service.general.listener;
+package com.monolithiot.iot.user.service.listener;
 
 import com.monolithiot.iot.user.entity.User;
 

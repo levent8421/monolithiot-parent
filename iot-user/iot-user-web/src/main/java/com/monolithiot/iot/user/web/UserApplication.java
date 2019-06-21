@@ -16,7 +16,6 @@ import tk.mybatis.spring.annotation.MapperScan;
  */
 @MapperScan({UserConstants.Context.MAPPER_PACKAGE_NAME})
 @SpringBootApplication(scanBasePackages = ApplicationConstants.Context.COMPONENT_PACKAGE_NAME)
-
 public class UserApplication {
     /**
      * 启动方法

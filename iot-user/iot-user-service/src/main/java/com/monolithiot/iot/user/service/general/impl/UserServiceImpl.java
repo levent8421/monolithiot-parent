@@ -8,7 +8,7 @@ import com.monolithiot.iot.service.encrypt.PasswordEncryptor;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.repository.UserMapper;
 import com.monolithiot.iot.user.service.general.UserService;
-import com.monolithiot.iot.user.service.general.listener.UserRegisterListener;
+import com.monolithiot.iot.user.service.listener.UserRegisterListener;
 import com.monolithiot.iot.user.token.UserAccessToken;
 import org.springframework.stereotype.Service;
 

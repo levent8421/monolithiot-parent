@@ -2,12 +2,19 @@ spring:
   profiles:
     active: @activationProfile@
   application:
-    name: zuul-gateway
+    name: notification-service
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
   freemarker:
     suffix: .html
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+pagehelper:
+  helper-dialect: mysql
+mybatis:
+  mapper-locations: classpath:mappers/*.mapper.xml
+  type-aliases-package: com.monolithiot.iot.user.entity
 eureka:
   instance:
     prefer-ip-address: true
@@ -15,16 +22,5 @@ eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
-zuul:
-  routes:
-    user:
-      path: /user/**
-      serviceId: user-service
-    notification:
-      path: /notification/**
-      serviceId: notification-service
-auth:
-  authorizedPath:
-    - /user/open/**
-    - /notification/open/**
-  loginPath: /user/login
+sms:
+  apiKey: 472dde7539dfb2c0ea2107be4d34dc63

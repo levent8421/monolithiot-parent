@@ -11,7 +11,6 @@
 
     <artifactId>iot-user-web</artifactId>
     <properties>
-        <eureka-version>1.4.7.RELEASE</eureka-version>
     </properties>
     <dependencies>
         <dependency>

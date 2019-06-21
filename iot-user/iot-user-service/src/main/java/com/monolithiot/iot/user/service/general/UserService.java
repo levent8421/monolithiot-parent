@@ -4,7 +4,7 @@ import com.monolithiot.iot.commons.dto.UserLoginDto;
 import com.monolithiot.iot.commons.token.AccessToken;
 import com.monolithiot.iot.service.basic.AbstractService;
 import com.monolithiot.iot.user.entity.User;
-import com.monolithiot.iot.user.service.general.listener.UserRegisterListener;
+import com.monolithiot.iot.user.service.listener.UserRegisterListener;
 
 /**
  * Create by 郭文梁 2019/6/15 0015 17:20

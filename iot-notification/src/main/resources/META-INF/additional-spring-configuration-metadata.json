@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "sms.apiKey",
+      "type": "java.lang.String",
+      "description": "云片apikey."
+    }
+  ]
+}

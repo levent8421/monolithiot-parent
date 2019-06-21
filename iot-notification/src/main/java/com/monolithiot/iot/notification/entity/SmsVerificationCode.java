@@ -20,10 +20,26 @@ import javax.persistence.Table;
 @Table(name = "t_sms_verification_code")
 public class SmsVerificationCode extends AbstractIntegerIdEntity {
     /**
+     * 状态：创建
+     */
+    public static final int STATE_CREATE = 0x00;
+    /**
+     * 状态：已发送
+     */
+    public static final int SEND_OUT = 0x01;
+    /**
+     * 状态：已验证
+     */
+    public static final int STATE_VERIFIED = 0x02;
+    /**
+     * 状态：出错
+     */
+    public static final int STATE_ERROR = 0x03;
+    /**
      * 记录号
      */
-    @Column(name = "trace_id", nullable = false)
-    private String traceId;
+    @Column(name = "trace_no", nullable = false)
+    private String traceNo;
     /**
      * 发送目标
      */
@@ -54,4 +70,9 @@ public class SmsVerificationCode extends AbstractIntegerIdEntity {
      */
     @Column(name = "expire_in", length = 10)
     private Integer expireIn;
+    /**
+     * 状态
+     */
+    @Column(name = "state", length = 2, nullable = false)
+    private Integer state;
 }
