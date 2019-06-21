@@ -31,4 +31,14 @@ public interface UserService extends AbstractService<User> {
      * @return User Entity
      */
     User register(User user, UserRegisterListener listener);
+
+    /**
+     * 通过手机号注册
+     *
+     * @param user                用户
+     * @param notificationTraceId 短信通知记录号
+     * @param verificationCode    短信验证码
+     * @return 注册结果
+     */
+    User registerWithPhone(User user, String notificationTraceId, String verificationCode);
 }

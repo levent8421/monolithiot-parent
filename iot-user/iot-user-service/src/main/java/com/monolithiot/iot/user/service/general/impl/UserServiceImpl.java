@@ -90,4 +90,10 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
             }
         }
     }
+
+    @Override
+    public User registerWithPhone(User user, String notificationTraceId, String verificationCode) {
+        //TODO 实现手机号注册逻辑
+        return null;
+    }
 }

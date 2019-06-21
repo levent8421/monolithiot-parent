@@ -28,4 +28,12 @@ public class UserRegisterParam {
      * 密码
      */
     private String password;
+    /**
+     * 短信验证码
+     */
+    private String verificationCode;
+    /**
+     * 短信通知记录号
+     */
+    private String notificationTraceId;
 }

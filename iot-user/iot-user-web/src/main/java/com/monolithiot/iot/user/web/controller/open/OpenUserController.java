@@ -66,11 +66,18 @@ public class OpenUserController {
         user.setPhone(param.getPhone());
     }
 
+    /**
+     * 通过手机号注册
+     *
+     * @param param 参数
+     * @return GR
+     */
     @PutMapping("/register-with-phone")
-    public GeneralResult<User> registerWithPhone(@RequestBody User param) {
+    public GeneralResult<User> registerWithPhone(@RequestBody UserRegisterParam param) {
         final User user = new User();
         checkAndCopyRegisterWithPhoneParam(param, user);
-        return null;
+        User res = userService.registerWithPhone(user, param.getNotificationTraceId(), param.getVerificationCode());
+        return GeneralResult.ok(res);
     }
 
     /**
@@ -79,13 +86,14 @@ public class OpenUserController {
      * @param param  参数
      * @param target 拷贝目标
      */
-    private void checkAndCopyRegisterWithPhoneParam(User param, User target) {
+    private void checkAndCopyRegisterWithPhoneParam(UserRegisterParam param, User target) {
         final Class<BadRequestException> ex = BadRequestException.class;
         notNull(param, ex, "参数未传");
         notEmpty(param.getName(), ex, "用户名必填");
         notEmpty(param.getPassword(), ex, "密码必填");
         notEmpty(param.getPhone(), ex, "电话号必填");
-
+        notEmpty(param.getVerificationCode(), ex, "短信验证码必填");
+        notEmpty(param.getNotificationTraceId(), ex, "短信通知记录号必填");
         target.setName(param.getName());
         target.setPassword(param.getPassword());
         target.setPhone(param.getPhone());
