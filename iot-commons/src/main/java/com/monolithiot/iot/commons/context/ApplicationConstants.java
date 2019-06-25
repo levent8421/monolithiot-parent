@@ -76,4 +76,18 @@ public class ApplicationConstants {
          */
         public static final String USER_ID_HEADER_NAME = "Zuul-Router-User-Id";
     }
+
+    /**
+     * 服务相关常量
+     */
+    public static class Service {
+        /**
+         * 用户服务
+         */
+        public static final String USER = "user-service";
+        /**
+         * 通知服务
+         */
+        public static final String NOTIFICATION = "notification-service";
+    }
 }

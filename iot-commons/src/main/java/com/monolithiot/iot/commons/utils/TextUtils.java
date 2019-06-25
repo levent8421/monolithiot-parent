@@ -75,4 +75,18 @@ public class TextUtils {
         }
         return new String(str.getBytes(), StandardCharsets.UTF_8);
     }
+
+    /**
+     * 不区分大小写的字符串比较
+     *
+     * @param str1 字符串1
+     * @param str2 字符串2
+     * @return 是否相同
+     */
+    public static boolean compareIgnoreCase(String str1, String str2) {
+        if (str1 == null || str2 == null) {
+            return false;
+        }
+        return str1.equalsIgnoreCase(str2);
+    }
 }
