@@ -6,6 +6,7 @@ import com.monolithiot.iot.commons.exception.InternalServerErrorException;
 import com.monolithiot.iot.commons.exception.ResourceNotFoundException;
 import com.monolithiot.iot.commons.utils.CommonIOUtils;
 import com.monolithiot.iot.commons.utils.RandomUtils;
+import com.monolithiot.iot.commons.utils.TextUtils;
 import com.monolithiot.iot.notification.api.YunPian;
 import com.monolithiot.iot.notification.entity.SmsVerificationCode;
 import com.monolithiot.iot.notification.mapper.SmsVerificationCodeMapper;
@@ -65,6 +66,21 @@ public class SmsVerificationCodeServiceImpl extends AbstractServiceImpl<SmsVerif
 
     @Override
     public SmsPreSendVo preSend(String target) {
+        return createSmsVerificationCode(target);
+    }
+
+    @Override
+    public SmsPreSendVo preSend() {
+        return createSmsVerificationCode(null);
+    }
+
+    /**
+     * 创建短信验证码 同时创建图片验证码
+     *
+     * @param target 发送目标 可为空
+     * @return SmsPreSendVo
+     */
+    private SmsPreSendVo createSmsVerificationCode(String target) {
         final String text = kaptchaProducer.createText();
 
         final SmsVerificationCode verificationCode = emptyCode();
@@ -113,10 +129,23 @@ public class SmsVerificationCodeServiceImpl extends AbstractServiceImpl<SmsVerif
 
     @Override
     public SmsVerificationCode send(String traceNo, String preVerificationCode) {
-        final SmsVerificationCode code = findByTraceNo(traceNo);
-        if (code == null) {
-            throw new ResourceNotFoundException(SmsVerificationCode.class, traceNo);
+        final SmsVerificationCode code = requireByTraceNo(traceNo);
+        if (TextUtils.isTrimedEmpty(code.getTarget())) {
+            throw new BadRequestException("该记录尚未指定发送目标");
         }
+        return send(code, preVerificationCode, code.getTarget());
+    }
+
+    @Override
+    public SmsVerificationCode send(String traceNo, String preVerificationCode, String target) {
+        @NotNull final SmsVerificationCode code = requireByTraceNo(traceNo);
+        if (!TextUtils.isTrimedEmpty(code.getTarget())) {
+            throw new BadRequestException("该发送记录已经指定过发送目标！");
+        }
+        return send(code, preVerificationCode, target);
+    }
+
+    private SmsVerificationCode send(SmsVerificationCode code, String preVerificationCode, String target) {
         if (!Objects.equals(code.getState(), SmsVerificationCode.STATE_CREATE)) {
             throw new BadRequestException("该记录已过期，请重新创建");
         }
@@ -125,6 +154,7 @@ public class SmsVerificationCodeServiceImpl extends AbstractServiceImpl<SmsVerif
             updateById(code);
             throw new BadRequestException("验证码错误");
         }
+        code.setTarget(target);
         final String verificationCode = RandomUtils.randomString(SMS_VERIFICATION_CODE_LENGTH, RandomUtils.NUMBERS);
         sendVerificationCode(code.getTarget(), verificationCode);
         code.setState(SmsVerificationCode.SEND_OUT);

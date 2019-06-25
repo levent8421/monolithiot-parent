@@ -11,6 +11,9 @@ import com.monolithiot.iot.web.advice.AbstractEntityController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import static com.monolithiot.iot.commons.utils.ParamChecker.notEmpty;
+import static com.monolithiot.iot.commons.utils.ParamChecker.notNull;
+
 /**
  * Create by 郭文梁 2019/6/21 0021 13:30
  * SmsVerificationCodeController
@@ -43,8 +46,31 @@ public class SmsVerificationCodeController extends AbstractEntityController<SmsV
      */
     @PutMapping("/pre-send")
     public GeneralResult<SmsPreSendVo> preSend(@RequestBody SmsSendParam param) {
+        checkPreSendParam(param);
         SmsPreSendVo res = smsVerificationCodeService.preSend(param.getTarget());
         return GeneralResult.ok(res);
+    }
+
+    /**
+     * 检查预发送参数
+     *
+     * @param param 参数
+     */
+    private void checkPreSendParam(SmsSendParam param) {
+        final Class<BadRequestException> ex = BadRequestException.class;
+        notNull(param, ex, "参数未传");
+        notEmpty(param.getTarget(), ex, "发送目标必填");
+    }
+
+    /**
+     * 短信预发送
+     *
+     * @return GR
+     */
+    @PutMapping("/pre-send-without-target")
+    public GeneralResult<SmsPreSendVo> preSend() {
+        final SmsPreSendVo smsPreSendVo = smsVerificationCodeService.preSend();
+        return GeneralResult.ok(smsPreSendVo);
     }
 
     /**
@@ -57,6 +83,20 @@ public class SmsVerificationCodeController extends AbstractEntityController<SmsV
     public GeneralResult<SmsVerificationCode> send(@RequestBody SmsVerificationCode param) {
         checkSendParam(param);
         SmsVerificationCode res = smsVerificationCodeService.send(param.getTraceNo(), param.getPreVerificationCode());
+        return GeneralResult.ok(res);
+    }
+
+    /**
+     * 发送至指定发送目标
+     *
+     * @param param 参数
+     * @return GR
+     */
+    @PostMapping("/send-with-target")
+    public GeneralResult<SmsVerificationCode> sendWithTarget(@RequestBody SmsVerificationCode param) {
+        checkSendParam(param);
+        notEmpty(param.getTarget(), BadRequestException.class, "发送目标必填");
+        SmsVerificationCode res = smsVerificationCodeService.send(param.getTraceNo(), param.getPreVerificationCode(), param.getTarget());
         return GeneralResult.ok(res);
     }
 

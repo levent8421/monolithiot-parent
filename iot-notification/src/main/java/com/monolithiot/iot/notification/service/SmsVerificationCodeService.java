@@ -24,6 +24,13 @@ public interface SmsVerificationCodeService extends AbstractService<SmsVerificat
     SmsPreSendVo preSend(String target);
 
     /**
+     * 短信预发送 不指定短信发送目标
+     *
+     * @return 发送结果
+     */
+    SmsPreSendVo preSend();
+
+    /**
      * 发送短信验证码
      *
      * @param traceNo             记录号
@@ -31,6 +38,16 @@ public interface SmsVerificationCodeService extends AbstractService<SmsVerificat
      * @return SmsVerificationCode
      */
     SmsVerificationCode send(String traceNo, String preVerificationCode);
+
+    /**
+     * 发送短信验证码 发送时指定发送目标
+     *
+     * @param traceNo             记录号
+     * @param preVerificationCode 图片验证码内容
+     * @param target              发送目标
+     * @return SmsVerificationCode Entity
+     */
+    SmsVerificationCode send(String traceNo, String preVerificationCode, String target);
 
     /**
      * 通过记录号查询发送记录
