@@ -85,7 +85,7 @@
     </dependencies>
 
     <build>
-        <finalName>monolithiot-notification</finalName>
+        <finalName>iot-notification</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

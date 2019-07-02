@@ -81,6 +81,7 @@
         </dependencies>
     </dependencyManagement>
     <build>
+        <finalName>iot-zuul</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
