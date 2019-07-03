@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 
 /**
  * Create By leven ont 2019/6/15 23:31
@@ -41,6 +42,18 @@ public class UserController {
         log.debug("User Id [{}]", HttpRequestUtils.obtainUserIdFromtRequest(request));
         log.debug("User Login Name [{}]", HttpRequestUtils.obtainLoginNameFromRequest(request));
         User user = userService.get(id);
+        return GeneralResult.ok(user);
+    }
+    /**
+     * 获取当前登录的用户
+     *
+     * @param request 请求对象
+     * @return GR
+     */
+    @GetMapping("/me")
+    public GeneralResult<User> me(HttpServletRequest request) {
+        final Integer userId = HttpRequestUtils.obtainUserIdFromtRequest(request);
+        @NotNull final User user = userService.require(userId);
         return GeneralResult.ok(user);
     }
 }
