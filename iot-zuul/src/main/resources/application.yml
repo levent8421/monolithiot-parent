@@ -23,6 +23,10 @@ zuul:
     notification:
       path: /notification/**
       serviceId: notification-service
+    templates:
+      path: /templates/**
+      serviceId: templates-service
+
 auth:
   authorizedPath:
     - /user/open/**

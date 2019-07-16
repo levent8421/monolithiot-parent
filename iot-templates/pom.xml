@@ -13,16 +13,7 @@
         <module>iot-templates-repository</module>
         <module>iot-templates-service</module>
         <module>iot-templates-commons</module>
-        <module>iot-templates-service</module>
         <module>iot-templates-web</module>
     </modules>
     <artifactId>iot-templates</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
 </project>

@@ -1,7 +1,10 @@
 package com.monolithiot.iot.templates.controller;
 
+import com.monolithiot.iot.commons.utils.HttpRequestUtils;
 import com.monolithiot.iot.commons.vo.GeneralResult;
+import com.monolithiot.iot.templates.service.StaticFileService;
 import com.monolithiot.iot.web.controller.AbstractController;
+import lombok.val;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +23,12 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/api/image")
 public class ImageFileController extends AbstractController {
+    private final StaticFileService staticFileService;
+
+    public ImageFileController(StaticFileService staticFileService) {
+        this.staticFileService = staticFileService;
+    }
+
     /**
      * 上传图片
      *
@@ -29,6 +38,8 @@ public class ImageFileController extends AbstractController {
      */
     @PostMapping("/upload")
     public GeneralResult<String> upload(MultipartFile file, HttpServletRequest request) {
-        return null;
+        val userId = HttpRequestUtils.obtainUserIdFromtRequest(request);
+        val accessUrl = staticFileService.saveTemplateImageFile(file, userId);
+        return GeneralResult.ok(accessUrl);
     }
 }

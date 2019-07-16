@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "path.staticFilePath",
+      "type": "java.lang.String",
+      "description": "静态文件保存路径."
+    },
+    {
+      "name": "path.staticServerPrefix",
+      "type": "java.lang.String",
+      "description": "静态服务器前缀."
+    }
+  ]
+}
