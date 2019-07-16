@@ -1,5 +1,6 @@
 package com.monolithiot.iot.commons.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.monolithiot.iot.commons.context.ApplicationConstants;
 import com.monolithiot.iot.commons.utils.DateTimeUtils;
 import lombok.Data;
@@ -29,11 +30,13 @@ public abstract class AbstractEntity<IdType> {
     /**
      * 对象创建时间
      */
+    @JsonFormat(pattern = ApplicationConstants.DateTime.DATE_TIME_FORMATER)
     @Column(name = "create_time", nullable = false)
     private Date createTime;
     /**
      * 对象更新时间
      */
+    @JsonFormat(pattern = ApplicationConstants.DateTime.DATE_TIME_FORMATER)
     @Column(name = "update_time", nullable = false)
     private Date updateTime;
     /**
