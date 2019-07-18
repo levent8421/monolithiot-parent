@@ -3,6 +3,7 @@ package com.monolithiot.iot.templates;
 import com.monolithiot.iot.templates.context.TemplatesConstants;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * Create By leven ont 2019/7/16 22:22
@@ -11,6 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * @author leven
  */
+@MapperScan({TemplatesConstants.Context.MAPPER_PACKAGE_NAME})
+//@EnableFeignClients(basePackages = TemplatesConstants.Context.FEIGN_CLIENT_PACKAGE)
 @SpringBootApplication(scanBasePackages = TemplatesConstants.Context.COMPONENT_BASE_PACKAGE)
 public class TemplatesApplication {
     /**

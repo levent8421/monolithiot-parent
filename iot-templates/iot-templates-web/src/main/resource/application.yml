@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: @activationProfile@
+    active: dev
   application:
     name: templates-service
   datasource:

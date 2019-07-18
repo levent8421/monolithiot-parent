@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.monolithiot.iot.templates.repository.sql.UserTemplateMapper">
+    <sql id="columns">
+        ut.id          ut_id,
+        ut.user_id     ut_user_id,
+        ut.template_id ut_template_id,
+        ut.create_time ut_create_time,
+        ut.update_time ut_update_time,
+        ut.deleted     ut_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_user_template as ut
+        where ut.deleted = false
+    </sql>
+    <resultMap id="rm_base" type="com.monolithiot.iot.templates.entity.UserTemplate">
+        <id column="ut_id" property="id"/>
+        <result column="ut_create_time" property="createTime"/>
+        <result column="ut_update_time" property="updateTime"/>
+        <result column="ut_deleted" property="deleted"/>
+    </resultMap>
+</mapper>

@@ -11,5 +11,16 @@
 
     <artifactId>iot-templates-repository</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.monolithiot.iot</groupId>
+            <artifactId>iot-templates-commons</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.monolithiot.iot</groupId>
+            <artifactId>iot-repository</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
