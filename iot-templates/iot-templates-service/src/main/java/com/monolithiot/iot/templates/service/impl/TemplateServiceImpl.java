@@ -2,15 +2,17 @@ package com.monolithiot.iot.templates.service.impl;
 
 import com.monolithiot.iot.commons.utils.DateTimeUtils;
 import com.monolithiot.iot.commons.utils.RandomUtils;
-import com.monolithiot.iot.templates.Vo.SimplePageRequest;
 import com.monolithiot.iot.templates.entity.MeasureTemplate;
 import com.monolithiot.iot.templates.repository.es.TemplateRepository;
+import com.monolithiot.iot.templates.repository.es.mapper.HighlightResultMapper;
 import com.monolithiot.iot.templates.service.TemplateService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Component;
 
@@ -41,9 +43,15 @@ public class TemplateServiceImpl implements TemplateService {
             new HighlightBuilder.Field("fields.displayText.pinyin")
     };
     private final TemplateRepository templateRepository;
+    private final ElasticsearchTemplate elasticsearchTemplate;
+    private final HighlightResultMapper highlightResultMapper;
 
-    public TemplateServiceImpl(TemplateRepository templateRepository) {
+    public TemplateServiceImpl(TemplateRepository templateRepository,
+                               ElasticsearchTemplate elasticsearchTemplate,
+                               HighlightResultMapper highlightResultMapper) {
         this.templateRepository = templateRepository;
+        this.elasticsearchTemplate = elasticsearchTemplate;
+        this.highlightResultMapper = highlightResultMapper;
     }
 
     @Override
@@ -61,7 +69,6 @@ public class TemplateServiceImpl implements TemplateService {
     public Page<MeasureTemplate> search(String q, Integer page, Integer rows) {
         val nestQuery = QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("fields.description", q))
                 .should(QueryBuilders.matchQuery("fields.description.pinyin", q))
-                .should(QueryBuilders.matchQuery("fields.description.pinyin", q))
                 .should(QueryBuilders.matchQuery("fields.displayText", q))
                 .should(QueryBuilders.matchQuery("fields.displayText.pinyin", q));
         val mainQuery = QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("title.pinyin", q))
@@ -74,11 +81,13 @@ public class TemplateServiceImpl implements TemplateService {
                 .should(QueryBuilders.matchQuery("industry.pinyin", q))
                 .should(nestQuery);
         val query = new NativeSearchQueryBuilder()
+                .withIndices("repository_1")
+                .withTypes("templates")
                 .withQuery(mainQuery)
                 .withHighlightFields(SEARCH_HIGHLIGHT_FIELDS)
                 .withHighlightBuilder(HIGHLIGHT_BUILDER)
-                .withPageable(new SimplePageRequest(page, rows))
+                .withPageable(PageRequest.of(page - 1, rows))
                 .build();
-        return templateRepository.search(query);
+        return elasticsearchTemplate.queryForPage(query, MeasureTemplate.class, highlightResultMapper);
     }
 }

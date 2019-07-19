@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.Score;
 
 import javax.persistence.GeneratedValue;
 import java.util.Date;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 @NoArgsConstructor
 @Data
-@Document(indexName = "repository_5", type = "templates")
+@Document(indexName = "repository_1", type = "templates")
 public class MeasureTemplate {
     /**
      * ID
@@ -31,6 +32,11 @@ public class MeasureTemplate {
     @GeneratedValue
     @Field
     private String id;
+    /**
+     * 匹配分数
+     */
+    @Score
+    private Float score;
     /**
      * 标题
      */

@@ -68,7 +68,7 @@ POST repository_1/templates/_mapping
 {
   "properties": {
     "id": {
-      "type": "long",
+      "type": "keyword",
       "index": false
     },
     "title": {
