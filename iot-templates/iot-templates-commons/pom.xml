@@ -13,6 +13,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.monolithiot.iot</groupId>
             <artifactId>iot-commons</artifactId>
             <version>0.0.1-SNAPSHOT</version>

@@ -1,9 +1,9 @@
 package com.monolithiot.iot.templates.service.impl;
 
 import com.monolithiot.iot.service.basic.impl.AbstractServiceImpl;
-import com.monolithiot.iot.templates.repository.sql.UserTemplateMapper;
 import com.monolithiot.iot.templates.entity.MeasureTemplate;
 import com.monolithiot.iot.templates.entity.UserTemplate;
+import com.monolithiot.iot.templates.repository.sql.UserTemplateMapper;
 import com.monolithiot.iot.templates.service.TemplateService;
 import com.monolithiot.iot.templates.service.UserTemplateService;
 import lombok.val;
@@ -35,6 +35,7 @@ public class UserTemplateServiceImpl extends AbstractServiceImpl<UserTemplate> i
         res.setUserId(userId);
         val templateSaveRes = templateService.save(template);
         res.setTemplateId(templateSaveRes.getId());
+        res.setTemplate(template);
         return save(res);
     }
 }

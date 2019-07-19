@@ -1,0 +1,189 @@
+{
+  "id": 1,
+  "title": "普通的木门",
+  "description": "测量普通木门",
+  "images": [
+    "http://domain/path/filename1.png",
+    "http://domain/path/filename2.png"
+  ],
+  "authorId": 1,
+  "authorName": "Levent",
+  "createTime": "2019-07-12 10:10:10",
+  "ModifyTime": "2019-07-12 10:10:10",
+  "industry": "家装测量",
+  "fields": {
+    "length": {
+      "displayText": "长度",
+      "unitText": "mm",
+      "unitWeight": "1000.00",
+      "expression": null,
+      "value": 1000,
+      "description": "备注信息"
+    },
+    "width": {
+      "displayText": "宽度",
+      "unitText": "mm",
+      "unitWeight": "1000.00",
+      "expression": null,
+      "value": 1000,
+      "description": "备注信息"
+    },
+    "area": {
+      "displayText": "面积",
+      "unitText": "m2",
+      "unitWeight": "1000.00",
+      "expression": "length*width",
+      "value": 1000,
+      "description": "备注信息"
+    }
+  }
+}
+
+
+
+PUT /repository_1
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "ik_pinyin_analyzer":{
+          "type": "custom",
+          "tokenizer": "ik_max_word",
+          "filter":["ik_pinyin_filter", "word_delimiter"]
+        }
+      },
+      "filter":{
+        "ik_pinyin_filter":{
+          "type": "pinyin",
+          "first_letter": "prefix",
+          "padding_char":" "
+        }
+      }
+    }
+  }
+}
+
+
+POST repository_1/templates/_mapping
+{
+  "properties": {
+    "id": {
+      "type": "long",
+      "index": false
+    },
+    "title": {
+      "type": "text",
+      "fields": {
+        "pinyin": {
+          "type": "text",
+          "store": true,
+          "term_vector": "with_positions_offsets",
+          "analyzer": "ik_pinyin_analyzer",
+          "boost": 10
+        }
+      }
+    },
+    "description": {
+      "type": "text",
+      "fields": {
+        "pinyin": {
+          "type": "text",
+          "store": true,
+          "term_vector": "with_positions_offsets",
+          "analyzer": "ik_pinyin_analyzer",
+          "boost": 5
+        }
+      }
+    },
+    "images": {
+      "type": "keyword",
+      "index": false
+    },
+    "authorId": {
+      "type": "long",
+      "index": false
+    },
+    "authorName": {
+      "type": "text",
+      "fields": {
+        "pinyin": {
+          "type": "text",
+          "store": true,
+          "term_vector": "with_positions_offsets",
+          "analyzer": "ik_pinyin_analyzer",
+          "boost": 5
+        }
+      }
+    },
+    "industry": {
+      "type": "text",
+      "fields": {
+        "pinyin": {
+          "type": "text",
+          "store": true,
+          "term_vector": "with_positions_offsets",
+          "analyzer": "ik_pinyin_analyzer",
+          "boost": 10
+        }
+      }
+    },
+    "createTime": {
+      "type": "date",
+      "format": "yyyy-mm-dd HH:mm:ss||yyyy/MM/dd HH:mm:ss",
+      "index": false
+    },
+    "modifyTime": {
+      "type": "date",
+      "format": "yyyy-mm-dd HH:mm:ss||yyyy/MM/dd HH:mm:ss",
+      "index": false
+    },
+    "fields": {
+      "type": "nested",
+      "properties": {
+        "name": {
+          "type": "keyword"
+        },
+        "displayText": {
+          "type": "text",
+          "fields": {
+            "pinyin": {
+              "type": "text",
+              "store": true,
+              "term_vector": "with_positions_offsets",
+              "analyzer": "ik_pinyin_analyzer",
+              "boost": 3
+            }
+          }
+        },
+        "unitText": {
+          "type": "keyword",
+          "index": false
+        },
+        "unitWeight": {
+          "type": "double",
+          "index": false
+        },
+        "expression": {
+          "type": "keyword",
+          "index": false
+        },
+        "value": {
+          "type": "long",
+          "index": false
+        },
+        "description": {
+          "type": "text",
+          "fields": {
+            "pinyin": {
+              "type": "text",
+              "store": true,
+              "term_vector": "with_positions_offsets",
+              "analyzer": "ik_pinyin_analyzer",
+              "boost": 3
+            }
+          }
+        }
+      }
+    }
+  }
+}

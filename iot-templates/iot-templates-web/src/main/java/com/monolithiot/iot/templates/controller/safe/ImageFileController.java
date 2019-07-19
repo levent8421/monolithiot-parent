@@ -1,4 +1,4 @@
-package com.monolithiot.iot.templates.controller;
+package com.monolithiot.iot.templates.controller.safe;
 
 import com.monolithiot.iot.commons.utils.HttpRequestUtils;
 import com.monolithiot.iot.commons.vo.GeneralResult;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  * @data 2019/7/16 18:53
  */
 @RestController
-@RequestMapping("/api/image")
+@RequestMapping("/image")
 public class ImageFileController extends AbstractController {
     private final StaticFileService staticFileService;
 

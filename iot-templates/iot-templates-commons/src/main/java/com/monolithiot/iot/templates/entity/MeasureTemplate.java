@@ -1,9 +1,15 @@
 package com.monolithiot.iot.templates.entity;
 
-import com.monolithiot.iot.commons.entity.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.monolithiot.iot.commons.context.ApplicationConstants;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
 
+import javax.persistence.GeneratedValue;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,35 +20,62 @@ import java.util.List;
  * @author 郭文梁
  * @data 2019/7/16 17:09
  */
-@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 @Data
-public class MeasureTemplate extends AbstractEntity<Long> {
+@Document(indexName = "repository_5", type = "templates")
+public class MeasureTemplate {
+    /**
+     * ID
+     */
+    @Id
+    @GeneratedValue
+    @Field
+    private String id;
     /**
      * 标题
      */
+    @Field
     private String title;
     /**
      * 描述
      */
+    @Field
     private String description;
     /**
      * 图片列表
      */
+    @Field
     private List<String> images;
     /**
      * 作者ID
      */
+    @Field
     private Integer authorId;
     /**
      * 作者姓名
      */
+    @Field
     private String authorName;
     /**
      * 所属行业
      */
+    @Field
     private String industry;
     /**
      * 字段信息
      */
+    @Field
     private List<TemplateField> fields;
+    /**
+     * 创建时间
+     */
+    @Field
+    @JsonFormat(pattern = ApplicationConstants.DateTime.DATE_TIME_FORMATER)
+    private Date createTime;
+    /**
+     * 最后一次修改时间
+     */
+    @Field
+    @JsonFormat(pattern = ApplicationConstants.DateTime.DATE_TIME_FORMATER)
+    private Date modifyTime;
 }

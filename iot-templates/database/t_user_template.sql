@@ -1,13 +1,16 @@
 drop table if exists t_user_template;
 create table t_user_template
 (
-    id          int(10)    not null auto_increment primary key,
-    user_id     int(10)    not null,
-    template_id bigint(20) not null,
-    create_time datetime   not null,
-    update_time datetime   not null,
-    deleted     bit        not null
+    id          int(10)      not null auto_increment primary key,
+    user_id     int(10)      not null,
+    template_id varchar(255) not null,
+    create_time datetime     not null,
+    update_time datetime     not null,
+    deleted     bit          not null
 );
+
+# alter table t_user_template
+#     modify template_id varchar(255) not null;
 
 select ut.id          ut_id,
        ut.user_id     ut_user_id,

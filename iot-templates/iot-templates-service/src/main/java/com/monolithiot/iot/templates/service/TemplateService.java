@@ -1,6 +1,7 @@
 package com.monolithiot.iot.templates.service;
 
 import com.monolithiot.iot.templates.entity.MeasureTemplate;
+import org.springframework.data.domain.Page;
 
 /**
  * Create By leven ont 2019/7/18 22:52
@@ -18,4 +19,14 @@ public interface TemplateService {
      * @return 保存结果 with id
      */
     MeasureTemplate save(MeasureTemplate measureTemplate);
+
+    /**
+     * 搜索模板
+     *
+     * @param q    搜索文本
+     * @param page 页码
+     * @param rows 每页大小
+     * @return spring data page
+     */
+    Page<MeasureTemplate> search(String q, Integer page, Integer rows);
 }

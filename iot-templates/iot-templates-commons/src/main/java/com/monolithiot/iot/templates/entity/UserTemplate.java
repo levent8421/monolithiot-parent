@@ -27,8 +27,8 @@ public class UserTemplate extends AbstractEntity<Integer> {
     /**
      * 模板ID
      */
-    @Column(name = "template_id", length = 20, nullable = false)
-    private Long templateId;
+    @Column(name = "template_id", nullable = false)
+    private String templateId;
     /**
      * 模板对象
      */

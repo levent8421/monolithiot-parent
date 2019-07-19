@@ -75,10 +75,17 @@ public class UserTemplateController extends AbstractEntityController<UserTemplat
         notEmpty(param.getTitle(), ex, "标题必填！");
         notEmpty(param.getFields(), ex, "请至少指定一个测量项！");
 
+        for (val field : param.getFields()) {
+            notNull(field, ex, "测量项不能为空！");
+            notEmpty(field.getName(), ex, "测量项名称必填！");
+            notEmpty(field.getDisplayText(), ex, "[" + field.getName() + "]的显示名称必填！");
+        }
+
         target.setTitle(param.getTitle());
         target.setDescription(param.getDescription());
         target.setImages(param.getImages());
         target.setIndustry(param.getIndustry());
         target.setFields(param.getFields());
+
     }
 }
