@@ -5,10 +5,8 @@ import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.service.general.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.val;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -44,6 +42,7 @@ public class UserController {
         User user = userService.get(id);
         return GeneralResult.ok(user);
     }
+
     /**
      * 获取当前登录的用户
      *
@@ -55,5 +54,37 @@ public class UserController {
         final Integer userId = HttpRequestUtils.obtainUserIdFromtRequest(request);
         @NotNull final User user = userService.require(userId);
         return GeneralResult.ok(user);
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param request 请求对象
+     * @param param   参数
+     * @return GR with user entity
+     */
+    @PostMapping("/update")
+    public GeneralResult<User> updateUserInfo(HttpServletRequest request,
+                                              @RequestBody User param) {
+        val userId = HttpRequestUtils.obtainUserIdFromtRequest(request);
+        val user = userService.require(userId);
+        copyUpdateParam(param, user);
+        val res = userService.updateById(user);
+        return GeneralResult.ok(res);
+    }
+
+    /**
+     * 拷贝更新用户信息的参数
+     *
+     * @param param  参数
+     * @param target 拷贝地址
+     */
+    private void copyUpdateParam(User param, User target) {
+        target.setGender(param.getGender());
+        target.setProvince(param.getProvince());
+        target.setCity(param.getCity());
+        target.setDistrict(param.getDistrict());
+        target.setAddress(param.getAddress());
+        target.setIndustry(param.getIndustry());
     }
 }

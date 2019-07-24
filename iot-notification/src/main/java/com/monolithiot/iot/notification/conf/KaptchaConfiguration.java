@@ -30,7 +30,7 @@ public class KaptchaConfiguration {
         prop.setProperty("kaptcha.textproducer.font.color", "89,99,100");
         prop.setProperty("kaptcha.image.width", "100");
         prop.setProperty("kaptcha.image.height", "50");
-        prop.setProperty("kaptcha.textproducer.font.size", "45");
+        prop.setProperty("kaptcha.textproducer.font.size", "30");
         prop.setProperty("kaptcha.textproducer.char.length", "4");
         prop.setProperty("kaptcha.textproducer.font.names", "宋体,楷体,微软雅黑");
         prop.setProperty("kaptcha.textproducer.char.string", "23456789ABCEFGHJKLMNPQRSTUVWXYZ");
