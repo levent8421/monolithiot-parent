@@ -53,6 +53,11 @@ public class MeasureTemplate {
     @Field
     private List<String> images;
     /**
+     * 是否匿名
+     */
+    @Field
+    private Boolean anonymous;
+    /**
      * 作者ID
      */
     @Field

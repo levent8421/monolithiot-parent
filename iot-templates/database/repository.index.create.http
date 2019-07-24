@@ -1,0 +1,4 @@
+POST /repository/_mapping
+
+{
+}
