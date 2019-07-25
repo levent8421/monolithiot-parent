@@ -1,0 +1,97 @@
+GET repository_5/templates/_search
+
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "title.pinyin": "ceshi"
+          }
+        },
+        {
+          "match": {
+            "title": "ceshi"
+          }
+        },
+        {
+          "match": {
+            "description.pinyin": "ceshi"
+          }
+        },
+        {
+          "match": {
+            "description": "ceshi"
+          }
+        },
+        {
+          "match": {
+            "authorName": "ceshi"
+          }
+        },
+        {
+          "match": {
+            "authorName.pinyin": "ceshi"
+          }
+        },
+        {
+          "match": {
+            "industry": "ceshi"
+          }
+        },
+        {
+          "match": {
+            "industry.pinyin": "ceshi"
+          }
+        },
+        {
+          "nested": {
+            "path": "fields",
+            "query": {
+              "bool": {
+                "should": [
+                  {
+                    "match": {
+                      "fields.description": "ceshi"
+                    }
+                  },
+                  {
+                    "match": {
+                      "fields.description.pinyin": "ceshi"
+                    }
+                  },
+                  {
+                    "match": {
+                      "fields.displayText": "ceshi"
+                    }
+                  },
+                  {
+                    "match": {
+                      "fields.displayText.pinyin": "ceshi"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "highlight": {
+    "fields": {
+      "title": {},
+      "title.pinyin": {},
+      "description": {},
+      "description.pinyin": {},
+      "authorName": {},
+      "authorName.pinyin": {},
+      "industry": {},
+      "industry.pinyin": {},
+      "fields.description": {},
+      "fields.description.pinyin": {},
+      "fields.displayText": {},
+      "fields.displayText.pinyin": {}
+    }
+  }
+}

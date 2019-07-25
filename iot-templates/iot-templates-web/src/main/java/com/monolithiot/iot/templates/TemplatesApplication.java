@@ -3,6 +3,7 @@ package com.monolithiot.iot.templates;
 import com.monolithiot.iot.templates.context.TemplatesConstants;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import tk.mybatis.spring.annotation.MapperScan;
 
 /**
@@ -13,8 +14,8 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @author leven
  */
 @MapperScan({TemplatesConstants.Context.MAPPER_PACKAGE_NAME})
-//@EnableFeignClients(basePackages = TemplatesConstants.Context.FEIGN_CLIENT_PACKAGE)
 @SpringBootApplication(scanBasePackages = TemplatesConstants.Context.COMPONENT_BASE_PACKAGE)
+@EnableDiscoveryClient
 public class TemplatesApplication {
     /**
      * 启动主方法

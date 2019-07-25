@@ -1,5 +1,124 @@
-PUT /repository
+POST repository_1/templates/_mapping
 
 {
-
+  "properties": {
+    "id": {
+      "type": "keyword",
+      "index": false
+    },
+    "title": {
+      "type": "text",
+      "fields": {
+        "pinyin": {
+          "type": "text",
+          "store": true,
+          "term_vector": "with_positions_offsets",
+          "analyzer": "ik_pinyin_analyzer",
+          "boost": 10
+        }
+      }
+    },
+    "description": {
+      "type": "text",
+      "fields": {
+        "pinyin": {
+          "type": "text",
+          "store": true,
+          "term_vector": "with_positions_offsets",
+          "analyzer": "ik_pinyin_analyzer",
+          "boost": 5
+        }
+      }
+    },
+    "images": {
+      "type": "keyword",
+      "index": false
+    },
+    "authorId": {
+      "type": "long",
+      "index": false
+    },
+    "authorName": {
+      "type": "text",
+      "fields": {
+        "pinyin": {
+          "type": "text",
+          "store": true,
+          "term_vector": "with_positions_offsets",
+          "analyzer": "ik_pinyin_analyzer",
+          "boost": 5
+        }
+      }
+    },
+    "industry": {
+      "type": "text",
+      "fields": {
+        "pinyin": {
+          "type": "text",
+          "store": true,
+          "term_vector": "with_positions_offsets",
+          "analyzer": "ik_pinyin_analyzer",
+          "boost": 10
+        }
+      }
+    },
+    "createTime": {
+      "type": "date",
+      "format": "yyyy-mm-dd HH:mm:ss||yyyy/MM/dd HH:mm:ss",
+      "index": false
+    },
+    "modifyTime": {
+      "type": "date",
+      "format": "yyyy-mm-dd HH:mm:ss||yyyy/MM/dd HH:mm:ss",
+      "index": false
+    },
+    "fields": {
+      "type": "nested",
+      "properties": {
+        "name": {
+          "type": "keyword"
+        },
+        "displayText": {
+          "type": "text",
+          "fields": {
+            "pinyin": {
+              "type": "text",
+              "store": true,
+              "term_vector": "with_positions_offsets",
+              "analyzer": "ik_pinyin_analyzer",
+              "boost": 3
+            }
+          }
+        },
+        "unitText": {
+          "type": "keyword",
+          "index": false
+        },
+        "unitWeight": {
+          "type": "double",
+          "index": false
+        },
+        "expression": {
+          "type": "keyword",
+          "index": false
+        },
+        "value": {
+          "type": "long",
+          "index": false
+        },
+        "description": {
+          "type": "text",
+          "fields": {
+            "pinyin": {
+              "type": "text",
+              "store": true,
+              "term_vector": "with_positions_offsets",
+              "analyzer": "ik_pinyin_analyzer",
+              "boost": 3
+            }
+          }
+        }
+      }
+    }
+  }
 }
