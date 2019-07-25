@@ -1,5 +1,8 @@
 package com.monolithiot.iot.web.controller;
 
+import com.monolithiot.iot.commons.utils.HttpRequestUtils;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -40,5 +43,25 @@ public abstract class AbstractController {
     @NotNull
     protected int defaultRows(Integer rows) {
         return rows == null ? DEFAULT_ROWS : rows;
+    }
+
+    /**
+     * 获取当前的用户ID
+     *
+     * @param request 请求对象
+     * @return 用户ID
+     */
+    protected Integer getCurrentUserId(HttpServletRequest request) {
+        return HttpRequestUtils.obtainUserIdFromtRequest(request);
+    }
+
+    /**
+     * 获取当前的用户登录名
+     *
+     * @param request 请求对象
+     * @return 用户登录名
+     */
+    protected String getCurrentUserName(HttpServletRequest request) {
+        return HttpRequestUtils.obtainLoginNameFromRequest(request);
     }
 }

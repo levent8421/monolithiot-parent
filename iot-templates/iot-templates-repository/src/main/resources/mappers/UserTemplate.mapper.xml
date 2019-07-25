@@ -17,6 +17,8 @@
     </sql>
     <resultMap id="rm_base" type="com.monolithiot.iot.templates.entity.UserTemplate">
         <id column="ut_id" property="id"/>
+        <result column="ut_user_id" property="userId"/>
+        <result column="ut_template_id" property="templateId"/>
         <result column="ut_create_time" property="createTime"/>
         <result column="ut_update_time" property="updateTime"/>
         <result column="ut_deleted" property="deleted"/>
