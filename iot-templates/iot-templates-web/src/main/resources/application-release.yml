@@ -13,7 +13,7 @@ spring:
       repositories:
         enabled: true
       cluster-nodes: localhost:9300
-      cluster-name: elk
+      cluster-name: es
 eureka:
   client:
     service-url:
