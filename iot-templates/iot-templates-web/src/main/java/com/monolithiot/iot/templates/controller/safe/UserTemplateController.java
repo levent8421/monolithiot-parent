@@ -86,6 +86,6 @@ public class UserTemplateController extends AbstractEntityController<UserTemplat
         target.setImages(param.getImages());
         target.setIndustry(param.getIndustry());
         target.setFields(param.getFields());
-        target.setAnonymous(param.getAnonymous() == null ? false : target.getAnonymous());
+        target.setAnonymous(param.getAnonymous() == null ? false : param.getAnonymous());
     }
 }
