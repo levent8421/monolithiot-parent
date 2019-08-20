@@ -51,7 +51,6 @@ public class TemplateGroupController extends AbstractEntityController<TemplateGr
     @PutMapping("/")
     public GeneralResult<TemplateGroup> create(HttpServletRequest request,
                                                @RequestBody TemplateGroup param) {
-
         val userId = HttpRequestUtils.obtainUserIdFromtRequest(request);
         val group = new TemplateGroup();
         checkAndCopyCreateParam(param, group);
@@ -66,12 +65,7 @@ public class TemplateGroupController extends AbstractEntityController<TemplateGr
      * @param target 拷贝地址
      */
     private void checkAndCopyCreateParam(TemplateGroup param, TemplateGroup target) {
-        val ex = BadRequestException.class;
-        notNull(param, ex, "参数未传！");
-        notEmpty(param.getName(), ex, "分组名称必填！");
-
-        target.setName(param.getName());
-        target.setDescription(param.getDescription());
+        checkAndCopyUpdateParam(param, target);
 
         val templateIds = param.getTemplates() == null ?
                 new ArrayList<String>() :
@@ -112,6 +106,9 @@ public class TemplateGroupController extends AbstractEntityController<TemplateGr
 
         target.setName(param.getName());
         target.setDescription(param.getDescription());
+        target.setTitle(param.getTitle());
+        target.setRemark(param.getRemark());
+        target.setDataType(param.getDataType());
     }
 
     /**

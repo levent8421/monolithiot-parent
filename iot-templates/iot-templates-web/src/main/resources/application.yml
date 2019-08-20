@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: release
+    active: dev
   application:
     name: templates-service
   datasource:

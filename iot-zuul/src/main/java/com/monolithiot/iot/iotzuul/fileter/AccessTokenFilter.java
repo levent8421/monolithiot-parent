@@ -154,14 +154,39 @@ public class AccessTokenFilter extends AbstractZuulFilter {
      */
     private void doLogin(String requestBody) throws ZuulException {
         UserLoginDto userLoginDto = UserLoginDto.fromJson(requestBody);
-        final GeneralResult<AccessToken> res = userFeignClient.login(userLoginDto);
-        if (Objects.equals(res.getCode(), HttpStatus.SC_OK)) {
-            final AccessToken accessToken = res.getData();
-            final String tokenStr = accessTokenEncoder.encode(accessToken.asJson(), ACCESS_TOKEN_PREFIX);
-            sendJsonResponse(HttpStatus.SC_OK, GeneralResult.ok(tokenStr), objectMapper);
-        } else {
-            sendJsonResponse(res.getCode(), res, objectMapper);
+        if (checkLoginParam(userLoginDto)) {
+            final GeneralResult<AccessToken> res = userFeignClient.login(userLoginDto);
+            if (Objects.equals(res.getCode(), HttpStatus.SC_OK)) {
+                final AccessToken accessToken = res.getData();
+                final String tokenStr = accessTokenEncoder.encode(accessToken.asJson(), ACCESS_TOKEN_PREFIX);
+                sendJsonResponse(HttpStatus.SC_OK, GeneralResult.ok(tokenStr), objectMapper);
+            } else {
+                sendJsonResponse(res.getCode(), res, objectMapper);
+            }
         }
+    }
+
+    /**
+     * 检查登录参数
+     *
+     * @param userLoginDto 登录参数对象
+     * @return 是否合法
+     * @throws ZuulException ZuulException
+     */
+    private boolean checkLoginParam(UserLoginDto userLoginDto) throws ZuulException {
+        if (userLoginDto == null) {
+            sendJsonResponse(HttpStatus.SC_BAD_REQUEST, GeneralResult.badRequest("参数未传"), objectMapper);
+            return false;
+        }
+        if (TextUtils.isTrimedEmpty(userLoginDto.getLoginName())) {
+            sendJsonResponse(HttpStatus.SC_BAD_REQUEST, GeneralResult.badRequest("登录名必填!"), objectMapper);
+            return false;
+        }
+        if (TextUtils.isTrimedEmpty(userLoginDto.getPassword())) {
+            sendJsonResponse(HttpStatus.SC_BAD_REQUEST, GeneralResult.badRequest("密码必填!"), objectMapper);
+            return false;
+        }
+        return true;
     }
 
     /**

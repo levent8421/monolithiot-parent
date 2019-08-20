@@ -1,6 +1,8 @@
 package com.monolithiot.iot.web.controller;
 
+import com.monolithiot.iot.commons.exception.PermissionDeniedException;
 import com.monolithiot.iot.commons.utils.HttpRequestUtils;
+import lombok.val;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -63,5 +65,32 @@ public abstract class AbstractController {
      */
     protected String getCurrentUserName(HttpServletRequest request) {
         return HttpRequestUtils.obtainLoginNameFromRequest(request);
+    }
+
+    /**
+     * 获取当前登录的用户ID 不存在时抛出异常
+     *
+     * @param request 请求对象
+     */
+    protected Integer requireCurrentUserId(HttpServletRequest request) {
+        val userId = HttpRequestUtils.obtainUserIdFromtRequest(request);
+        if (userId == null) {
+            throw new PermissionDeniedException("用户未登录！");
+        }
+        return userId;
+    }
+
+    /**
+     * 获取当前登录的用户登录名
+     *
+     * @param request 请求对象
+     * @return 登录名
+     */
+    protected String requireCurrentUserName(HttpServletRequest request) {
+        val loginName = HttpRequestUtils.obtainLoginNameFromRequest(request);
+        if (loginName == null) {
+            throw new PermissionDeniedException("用户未登录！");
+        }
+        return loginName;
     }
 }

@@ -2,6 +2,7 @@ package com.monolithiot.iot.templates.repository.es;
 
 import com.monolithiot.iot.templates.entity.MeasureTemplate;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * Create by 郭文梁 2019/7/19 15:46
@@ -11,5 +12,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
  * @author 郭文梁
  * @data 2019/7/19 15:46
  */
+@Repository
 public interface TemplateRepository extends ElasticsearchRepository<MeasureTemplate, String> {
 }

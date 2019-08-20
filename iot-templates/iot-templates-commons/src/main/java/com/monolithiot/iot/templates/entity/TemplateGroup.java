@@ -41,6 +41,21 @@ public class TemplateGroup extends AbstractEntity<Integer> {
     @Column(name = "description")
     private String description;
     /**
+     * 标题
+     */
+    @Column(name = "title")
+    private String title;
+    /**
+     * 备注
+     */
+    @Column(name = "remark")
+    private String remark;
+    /**
+     * 数据类型
+     */
+    @Column(name = "data_type")
+    private String dataType;
+    /**
      * 模板ID列表 JSON方式存储
      */
     @Column(name = "templates_json")

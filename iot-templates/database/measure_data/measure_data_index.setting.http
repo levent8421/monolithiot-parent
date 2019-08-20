@@ -1,0 +1,22 @@
+PUT /measure_data_index_1
+
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "ik_pinyin_analyzer":{
+          "type": "custom",
+          "tokenizer": "ik_max_word",
+          "filter":["ik_pinyin_filter", "word_delimiter"]
+        }
+      },
+      "filter":{
+        "ik_pinyin_filter":{
+          "type": "pinyin",
+          "first_letter": "prefix",
+          "padding_char":" "
+        }
+      }
+    }
+  }
+}

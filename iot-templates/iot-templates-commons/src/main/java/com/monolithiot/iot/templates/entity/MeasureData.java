@@ -6,17 +6,16 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
- * Create by 郭文梁 2019/7/16 17:09
- * MeasureTemplate
- * 测量模板
+ * Create by 郭文梁 2019/8/20 15:39
+ * MeasureDate
+ * 测量数据实体类
  *
  * @author 郭文梁
- * @data 2019/7/16 17:09
+ * @data 2019/8/20 15:39
  */
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Data
-@Document(indexName = "repository_1", type = "templates")
-public class MeasureTemplate extends AbstractTemplate {
-
+@Document(indexName = "measure_data_index_1", type = "measure_data")
+public class MeasureData extends AbstractTemplate {
 }

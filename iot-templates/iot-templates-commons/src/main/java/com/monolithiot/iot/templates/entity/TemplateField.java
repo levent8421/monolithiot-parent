@@ -44,6 +44,10 @@ public class TemplateField implements Serializable {
      * 描述
      */
     private String description;
+    /**
+     * 备注
+     */
+    private String remark;
 
     public TemplateField(String name, String displayText) {
         this.name = name;
