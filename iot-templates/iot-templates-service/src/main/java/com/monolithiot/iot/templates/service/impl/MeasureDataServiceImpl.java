@@ -5,9 +5,15 @@ import com.monolithiot.iot.commons.utils.DateTimeUtils;
 import com.monolithiot.iot.commons.utils.RandomUtils;
 import com.monolithiot.iot.templates.entity.MeasureData;
 import com.monolithiot.iot.templates.repository.es.MeasureDataRepository;
+import com.monolithiot.iot.templates.repository.es.mapper.HighlightResultMapper;
 import com.monolithiot.iot.templates.service.MeasureDataService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,9 +30,15 @@ import java.util.Optional;
 @Slf4j
 public class MeasureDataServiceImpl implements MeasureDataService {
     private final MeasureDataRepository measureDataRepository;
+    private final ElasticsearchTemplate elasticsearchTemplate;
+    private final HighlightResultMapper highlightResultMapper;
 
-    public MeasureDataServiceImpl(MeasureDataRepository measureDataRepository) {
+    public MeasureDataServiceImpl(MeasureDataRepository measureDataRepository,
+                                  ElasticsearchTemplate elasticsearchTemplate,
+                                  HighlightResultMapper highlightResultMapper) {
         this.measureDataRepository = measureDataRepository;
+        this.elasticsearchTemplate = elasticsearchTemplate;
+        this.highlightResultMapper = highlightResultMapper;
     }
 
     @Override
@@ -65,5 +77,17 @@ public class MeasureDataServiceImpl implements MeasureDataService {
             return data.get();
         }
         throw new ResourceNotFoundException(MeasureData.class, id);
+    }
+
+    @Override
+    public Page<MeasureData> findByUserId(Integer userId, int page, int rows) {
+        val mainQuery = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("authorId", userId));
+        val query = new NativeSearchQueryBuilder()
+                .withIndices("measure_data_index_1")
+                .withTypes("measure_data")
+                .withQuery(mainQuery)
+                .withPageable(PageRequest.of(page - 1, rows))
+                .build();
+        return elasticsearchTemplate.queryForPage(query, MeasureData.class, highlightResultMapper);
     }
 }

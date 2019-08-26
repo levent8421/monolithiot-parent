@@ -44,6 +44,11 @@ public abstract class AbstractTemplate {
     @Field
     private String description;
     /**
+     * Data Type
+     */
+    @Field
+    private String dataType;
+    /**
      * 图片列表
      */
     @Field

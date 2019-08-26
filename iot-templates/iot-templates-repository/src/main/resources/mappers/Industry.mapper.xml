@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.monolithiot.iot.templates.repository.sql.IndustryMapper">
+    <sql id="columns">
+        i.id          i_id,
+        i.name        i_name,
+        i.description i_description,
+        i.order_num   i_order_num,
+        i.create_time i_create_time,
+        i.update_time i_update_time,
+        i.deleted     i_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_industry as i
+        where i.deleted = false
+    </sql>
+    <resultMap id="rm_base" type="com.monolithiot.iot.templates.entity.Industry">
+        <id column="i_id" property="id"/>
+        <result column="i_name" property="name"/>
+        <result column="i_description" property="description"/>
+        <result column="i_order_num" property="orderNum"/>
+        <result column="i_create_time" property="createTime"/>
+        <result column="i_update_time" property="updateTime"/>
+        <result column="i_deleted" property="deleted"/>
+    </resultMap>
+    <select id="selectAllWithOrder" resultMap="rm_base">
+        <include refid="select"/>
+        order by i.order_num desc
+    </select>
+</mapper>

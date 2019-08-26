@@ -1,6 +1,7 @@
 package com.monolithiot.iot.templates.service;
 
 import com.monolithiot.iot.templates.entity.MeasureData;
+import org.springframework.data.domain.Page;
 
 /**
  * Create by 郭文梁 2019/8/20 16:07
@@ -26,4 +27,14 @@ public interface MeasureDataService {
      * @return 测量数据
      */
     MeasureData require(String id);
+
+    /**
+     * 通过用户ID获得测量数据列表
+     *
+     * @param userId 用户ID
+     * @param page   页码
+     * @param rows   煤业大小
+     * @return Page Object
+     */
+    Page<MeasureData> findByUserId(Integer userId, int page, int rows);
 }
