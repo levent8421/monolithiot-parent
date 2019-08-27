@@ -1,5 +1,6 @@
 package com.monolithiot.iot.user.web.controller.safe;
 
+import com.monolithiot.iot.commons.exception.BadRequestException;
 import com.monolithiot.iot.commons.utils.HttpRequestUtils;
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.user.entity.User;
@@ -7,9 +8,12 @@ import com.monolithiot.iot.user.service.general.UserService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+
+import static com.monolithiot.iot.commons.utils.ParamChecker.notEmpty;
 
 /**
  * Create By leven ont 2019/6/15 23:31
@@ -86,5 +90,21 @@ public class UserController {
         target.setDistrict(param.getDistrict());
         target.setAddress(param.getAddress());
         target.setIndustry(param.getIndustry());
+    }
+
+    /**
+     * 设置用户的头像
+     *
+     * @param avatarFile 头像图片文件
+     * @param request    请求对象
+     * @return GR
+     */
+    @PostMapping("/avatar")
+    public GeneralResult<String> setAvatar(MultipartFile avatarFile, HttpServletRequest request) {
+        notEmpty(avatarFile, BadRequestException.class, "头像文件未上传！");
+        val userId = HttpRequestUtils.obtainUserIdFromtRequest(request);
+        @NotNull User user = userService.require(userId);
+        val avatarUrl = userService.setAvatar(user, avatarFile);
+        return GeneralResult.ok(avatarUrl);
     }
 }

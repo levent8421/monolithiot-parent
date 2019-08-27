@@ -5,6 +5,7 @@ import com.monolithiot.iot.commons.token.AccessToken;
 import com.monolithiot.iot.service.basic.AbstractService;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.service.listener.UserRegisterListener;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Create by 郭文梁 2019/6/15 0015 17:20
@@ -41,4 +42,13 @@ public interface UserService extends AbstractService<User> {
      * @return 注册结果
      */
     User registerWithPhone(User user, String notificationTraceId, String verificationCode);
+
+    /**
+     * 设置用户的头像
+     *
+     * @param user       用户
+     * @param avatarFile 图片文件
+     * @return 图片文件访问路径
+     */
+    String setAvatar(User user, MultipartFile avatarFile);
 }

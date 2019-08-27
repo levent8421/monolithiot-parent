@@ -1,5 +1,7 @@
 package com.monolithiot.iot.commons.utils;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -49,6 +51,20 @@ public class ParamChecker {
     public static void notEmpty(Collection<?> collection, Class<? extends RuntimeException> exceptionClass, String msg) {
         notNull(collection, exceptionClass, msg);
         if (collection.size() <= 0) {
+            throwException(exceptionClass, msg);
+        }
+    }
+
+    /**
+     * 当文件为空时抛出异常
+     *
+     * @param file           文件
+     * @param exceptionClass 异常类对象
+     * @param msg            异常信息
+     */
+    public static void notEmpty(MultipartFile file, Class<? extends RuntimeException> exceptionClass, String msg) {
+        notNull(file, exceptionClass, msg);
+        if (file.isEmpty()) {
             throwException(exceptionClass, msg);
         }
     }

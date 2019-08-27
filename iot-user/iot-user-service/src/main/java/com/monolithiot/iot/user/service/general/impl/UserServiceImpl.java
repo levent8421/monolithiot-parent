@@ -17,6 +17,7 @@ import com.monolithiot.iot.user.service.listener.UserRegisterListener;
 import com.monolithiot.iot.user.token.UserAccessToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Create by 郭文梁 2019/6/15 0015 17:21
@@ -125,5 +126,11 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
             throw new InternalServerErrorException(res.getMsg());
         }
         return res.getData();
+    }
+
+    @Override
+    public String setAvatar(User user, MultipartFile avatarFile) {
+        
+        return null;
     }
 }
