@@ -1,4 +1,4 @@
-POST measure_data_index_1/measure_data/_mapping
+POST measure_data_index_2/measure_data/_mapping
 
 {
   "properties": {
@@ -35,8 +35,7 @@ POST measure_data_index_1/measure_data/_mapping
       "index": false
     },
     "authorId": {
-      "type": "long",
-      "index": false
+      "type": "long"
     },
     "authorName": {
       "type": "text",

@@ -1,4 +1,4 @@
-PUT /measure_data_index_1
+PUT /measure_data_index_2
 
 {
   "settings": {

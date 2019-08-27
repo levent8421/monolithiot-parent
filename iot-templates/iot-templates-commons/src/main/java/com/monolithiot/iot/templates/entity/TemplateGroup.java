@@ -64,4 +64,13 @@ public class TemplateGroup extends AbstractEntity<Integer> {
      * 通过templatesJson 字段解析出的模板ID列表
      */
     private List<String> templates;
+    /**
+     * 行业ID
+     */
+    @Column(name = "industry_id", length = 10)
+    private Integer industryId;
+    /**
+     * 行业对象 for industryId
+     */
+    private Industry industry;
 }

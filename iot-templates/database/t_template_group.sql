@@ -17,6 +17,9 @@ alter table t_template_group
     add column remark varchar(255) null after title;
 alter table t_template_group
     add column data_type varchar(255) null after remark;
+
+alter table t_template_group
+    add column industry_id int(10) null after templates_json;
 select tg.id             tg_id,
        tg.user_id        tg_user_id,
        tg.name           tg_name,

@@ -6,9 +6,11 @@ import com.monolithiot.iot.templates.service.IndustryService;
 import com.monolithiot.iot.web.advice.AbstractEntityController;
 import lombok.val;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -43,6 +45,18 @@ public class IndustryController extends AbstractEntityController<Industry> {
     public GeneralResult<List<Industry>> findAll() {
         val all = industryService.findAllWithOrder();
         return GeneralResult.ok(all);
+    }
+
+    /**
+     * 通过ID查找行业信息
+     *
+     * @param id ID
+     * @return GR
+     */
+    @GetMapping("/{id}")
+    public GeneralResult<Industry> findById(@PathVariable("id") Integer id) {
+        @NotNull Industry industry = industryService.require(id);
+        return GeneralResult.ok(industry);
     }
 }
 

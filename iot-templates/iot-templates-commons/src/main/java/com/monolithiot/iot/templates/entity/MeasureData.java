@@ -1,5 +1,6 @@
 package com.monolithiot.iot.templates.entity;
 
+import com.monolithiot.iot.templates.context.TemplatesConstants;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Data
-@Document(indexName = "measure_data_index_1", type = "measure_data")
+@Document(indexName = TemplatesConstants.ElasticSearch.MEASURE_DATA_INDEX,
+        type = TemplatesConstants.ElasticSearch.MEASURE_DATA_TYPE)
 public class MeasureData extends AbstractTemplate {
 }

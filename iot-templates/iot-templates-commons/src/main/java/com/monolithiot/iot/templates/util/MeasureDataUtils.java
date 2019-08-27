@@ -34,6 +34,8 @@ public class MeasureDataUtils {
             notEmpty(field.getDisplayText(), ex, "[" + field.getName() + "]的显示名称必填！");
         }
 
+        target.setDataType(param.getDataType());
+        target.setIndustryId(param.getIndustryId());
         target.setTitle(param.getTitle());
         target.setDescription(param.getDescription());
         target.setImages(param.getImages());

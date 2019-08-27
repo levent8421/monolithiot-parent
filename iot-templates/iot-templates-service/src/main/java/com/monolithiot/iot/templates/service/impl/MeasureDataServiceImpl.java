@@ -3,6 +3,7 @@ package com.monolithiot.iot.templates.service.impl;
 import com.monolithiot.iot.commons.exception.ResourceNotFoundException;
 import com.monolithiot.iot.commons.utils.DateTimeUtils;
 import com.monolithiot.iot.commons.utils.RandomUtils;
+import com.monolithiot.iot.templates.context.TemplatesConstants;
 import com.monolithiot.iot.templates.entity.MeasureData;
 import com.monolithiot.iot.templates.repository.es.MeasureDataRepository;
 import com.monolithiot.iot.templates.repository.es.mapper.HighlightResultMapper;
@@ -83,8 +84,8 @@ public class MeasureDataServiceImpl implements MeasureDataService {
     public Page<MeasureData> findByUserId(Integer userId, int page, int rows) {
         val mainQuery = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("authorId", userId));
         val query = new NativeSearchQueryBuilder()
-                .withIndices("measure_data_index_1")
-                .withTypes("measure_data")
+                .withIndices(TemplatesConstants.ElasticSearch.MEASURE_DATA_INDEX)
+                .withTypes(TemplatesConstants.ElasticSearch.MEASURE_DATA_TYPE)
                 .withQuery(mainQuery)
                 .withPageable(PageRequest.of(page - 1, rows))
                 .build();

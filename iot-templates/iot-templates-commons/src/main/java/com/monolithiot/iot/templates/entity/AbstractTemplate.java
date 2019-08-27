@@ -74,6 +74,11 @@ public abstract class AbstractTemplate {
     @Field
     private String industry;
     /**
+     * 行业ID
+     */
+    @Field
+    private Integer industryId;
+    /**
      * 字段信息
      */
     @Field

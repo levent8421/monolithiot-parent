@@ -6,6 +6,7 @@ import com.monolithiot.iot.templates.service.MeasureDataService;
 import com.monolithiot.iot.templates.util.MeasureDataUtils;
 import com.monolithiot.iot.web.controller.AbstractController;
 import lombok.val;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,5 +60,22 @@ public class MeasureDataController extends AbstractController {
     public GeneralResult<MeasureData> findMeasureDataById(@PathVariable("id") String id) {
         MeasureData measureData = measureDataService.require(id);
         return GeneralResult.ok(measureData);
+    }
+
+    /**
+     * 查询当前用户的测量数据
+     *
+     * @param request 请求对象
+     * @param page    页码
+     * @param rows    每页大小
+     * @return GR
+     */
+    @GetMapping("/mine")
+    public GeneralResult<Page<MeasureData>> findByCurrentUser(HttpServletRequest request, Integer page, Integer rows) {
+        page = defaultPage(page);
+        rows = defaultRows(rows);
+        Integer userId = requireCurrentUserId(request);
+        Page<MeasureData> res = measureDataService.findByUserId(userId, page, rows);
+        return GeneralResult.ok(res);
     }
 }

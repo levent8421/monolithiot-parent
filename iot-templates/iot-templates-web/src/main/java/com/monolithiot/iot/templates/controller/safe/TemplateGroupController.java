@@ -109,6 +109,7 @@ public class TemplateGroupController extends AbstractEntityController<TemplateGr
         target.setTitle(param.getTitle());
         target.setRemark(param.getRemark());
         target.setDataType(param.getDataType());
+        target.setIndustryId(param.getIndustryId());
     }
 
     /**

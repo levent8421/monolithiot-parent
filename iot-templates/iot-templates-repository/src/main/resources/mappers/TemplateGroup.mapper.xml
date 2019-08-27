@@ -10,6 +10,7 @@
         tg.remark         tg_remark,
         tg.data_type      tg_data_type,
         tg.templates_json tg_templates_json,
+        tg.industry_id    tg_industry_id,
         tg.create_time    tg_create_time,,
         tg.update_time    tg_update_time
         tg.deleted        tg_deleted
@@ -29,6 +30,7 @@
         <result column="tg_remark" property="remark"/>
         <result column="tg_data_type" property="dataType"/>
         <result column="tg_templates_json" property="templatesJson"/>
+        <result column="tg_industry_id" property="industryId"/>
         <result column="tg_create_time" property="createTime"/>
         <result column="tg_update_time" property="updateTime"/>
         <result column="tg_deleted" property="deleted"/>

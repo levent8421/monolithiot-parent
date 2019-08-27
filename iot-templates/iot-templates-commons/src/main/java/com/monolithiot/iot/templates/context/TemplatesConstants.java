@@ -17,4 +17,18 @@ public class TemplatesConstants {
         public static final String SAFE_CONTROLLER_PACKAGE = "com.monolithiot.iot.templates.controller.safe";
         public static final String API_CONTROLLER_PACKAGE = "com.monolithiot.iot.templates.controller.api";
     }
+
+    /**
+     * ES相关常量
+     */
+    public static class ElasticSearch {
+        /**
+         * 测量数据Index
+         */
+        public static final String MEASURE_DATA_INDEX = "measure_data_index_2";
+        /**
+         * 测量数据Type
+         */
+        public static final String MEASURE_DATA_TYPE = "measure_data";
+    }
 }
