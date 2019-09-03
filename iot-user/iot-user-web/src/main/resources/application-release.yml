@@ -12,6 +12,9 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:9001/eureka/
+path:
+  staticFilePath: /var/www/static0.berrontech.com/user
+  staticServerPrefix: http://static0.berrontech.com/user
 logging:
   level:
     com.monolithiot.iot: debug

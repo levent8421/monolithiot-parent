@@ -4,7 +4,7 @@ import com.monolithiot.iot.commons.exception.BadRequestException;
 import com.monolithiot.iot.commons.exception.InternalServerErrorException;
 import com.monolithiot.iot.commons.utils.MultipartFileUtil;
 import com.monolithiot.iot.templates.service.StaticFileService;
-import com.monolithiot.iot.templates.service.prop.PathProp;
+import com.monolithiot.iot.commons.prop.PathProp;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;

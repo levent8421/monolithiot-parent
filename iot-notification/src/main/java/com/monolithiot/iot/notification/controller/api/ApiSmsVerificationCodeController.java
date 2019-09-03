@@ -59,4 +59,17 @@ public class ApiSmsVerificationCodeController extends AbstractEntityController<S
         ParamChecker.notEmpty(param.getTraceNo(), ex, "记录号必填");
         ParamChecker.notEmpty(param.getVerificationCode(), ex, "短信验证码必填");
     }
+
+    /**
+     * 验证并获取验证码对象
+     *
+     * @param param 参数
+     * @return GR
+     */
+    @PostMapping("/verify-and-get")
+    public GeneralResult<String> verifyAndGet(@RequestBody VerifySmsCodeParam param) {
+        checkVerifyParam(param);
+        SmsVerificationCode res = smsVerificationCodeService.verifyAndGet(param.getTraceNo(), param.getVerificationCode());
+        return GeneralResult.ok(res.getTarget());
+    }
 }

@@ -27,4 +27,14 @@ public interface SmsVerificationCodeFeignClient {
      */
     @PostMapping("/sms-verification-code/verify")
     GeneralResult<Boolean> verifySmsCode(@RequestBody VerifySmsCodeParam param);
+
+    /**
+     * 校验短信验证码 并获取电话号
+     *
+     * @param param 参数
+     * @return GR
+     */
+    @PostMapping("/sms-verification-code/verify-and-get")
+    GeneralResult<String> verifySmsCodeAndGetPhoneNumber(@RequestBody VerifySmsCodeParam param);
+
 }

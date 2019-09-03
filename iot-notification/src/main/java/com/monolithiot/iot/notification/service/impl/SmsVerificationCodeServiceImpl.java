@@ -15,6 +15,7 @@ import com.monolithiot.iot.notification.vo.SmsPreSendVo;
 import com.monolithiot.iot.service.basic.impl.AbstractServiceImpl;
 import com.yunpian.sdk.model.SmsSingleSend;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 
@@ -196,5 +197,14 @@ public class SmsVerificationCodeServiceImpl extends AbstractServiceImpl<SmsVerif
             throw new ResourceNotFoundException(SmsVerificationCode.class, traceNo);
         }
         return code;
+    }
+
+    @Override
+    public SmsVerificationCode verifyAndGet(String traceNo, String verificationCode) {
+        val smsCode = requireByTraceNo(traceNo);
+        if (Objects.equals(smsCode.getVerificationCode(), verificationCode)) {
+            return smsCode;
+        }
+        throw new BadRequestException("验证码错误！");
     }
 }

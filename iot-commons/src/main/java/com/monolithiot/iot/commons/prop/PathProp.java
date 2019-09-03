@@ -1,4 +1,4 @@
-package com.monolithiot.iot.templates.service.prop;
+package com.monolithiot.iot.commons.prop;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -28,4 +28,8 @@ public class PathProp {
      * 静态资源服务器访问前缀
      */
     private String staticServerPrefix;
+    /**
+     * 用户头像保存路径
+     */
+    private String userAvatarPath = "/user/avatar/";
 }

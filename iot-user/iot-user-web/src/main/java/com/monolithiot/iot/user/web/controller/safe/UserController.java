@@ -5,6 +5,8 @@ import com.monolithiot.iot.commons.utils.HttpRequestUtils;
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.service.general.UserService;
+import com.monolithiot.iot.user.web.vo.UpdatePhoneParam;
+import com.monolithiot.iot.web.advice.AbstractEntityController;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +27,11 @@ import static com.monolithiot.iot.commons.utils.ParamChecker.notEmpty;
 @RestController
 @RequestMapping("/user")
 @Slf4j
-public class UserController {
+public class UserController extends AbstractEntityController<User> {
     private final UserService userService;
 
     public UserController(UserService userService) {
+        super(userService);
         this.userService = userService;
     }
 
@@ -106,5 +109,21 @@ public class UserController {
         @NotNull User user = userService.require(userId);
         val avatarUrl = userService.setAvatar(user, avatarFile);
         return GeneralResult.ok(avatarUrl);
+    }
+
+    /**
+     * 更新电话号
+     *
+     * @param param   params
+     * @param request Request
+     * @return GR
+     */
+    @PostMapping("/phone")
+    public GeneralResult<User> setPhone(@RequestBody UpdatePhoneParam param,
+                                        HttpServletRequest request) {
+        val userId = requireCurrentUserId(request);
+        val user = userService.require(userId);
+        val res = userService.updatePhone(user, param.getSmsTraceId(), param.getVerificationCode());
+        return GeneralResult.ok(res);
     }
 }

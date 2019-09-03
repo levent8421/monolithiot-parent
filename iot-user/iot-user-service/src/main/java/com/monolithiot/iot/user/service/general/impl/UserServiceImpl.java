@@ -3,7 +3,9 @@ package com.monolithiot.iot.user.service.general.impl;
 import com.monolithiot.iot.commons.dto.UserLoginDto;
 import com.monolithiot.iot.commons.exception.BadRequestException;
 import com.monolithiot.iot.commons.exception.InternalServerErrorException;
+import com.monolithiot.iot.commons.prop.PathProp;
 import com.monolithiot.iot.commons.token.AccessToken;
+import com.monolithiot.iot.commons.utils.MultipartFileUtil;
 import com.monolithiot.iot.commons.utils.TextUtils;
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.commons.vo.notification.VerifySmsCodeParam;
@@ -15,9 +17,12 @@ import com.monolithiot.iot.user.service.feign.SmsVerificationCodeFeignClient;
 import com.monolithiot.iot.user.service.general.UserService;
 import com.monolithiot.iot.user.service.listener.UserRegisterListener;
 import com.monolithiot.iot.user.token.UserAccessToken;
+import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * Create by 郭文梁 2019/6/15 0015 17:21
@@ -36,14 +41,28 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     private final UserMapper userMapper;
     private final PasswordEncryptor passwordEncryptor;
     private final SmsVerificationCodeFeignClient smsVerificationCodeFeignClient;
+    private final PathProp pathProp;
 
     public UserServiceImpl(UserMapper mapper,
                            PasswordEncryptor passwordEncryptor,
-                           SmsVerificationCodeFeignClient smsVerificationCodeFeignClient) {
+                           SmsVerificationCodeFeignClient smsVerificationCodeFeignClient,
+                           PathProp pathProp) {
         super(mapper);
         this.userMapper = mapper;
         this.passwordEncryptor = passwordEncryptor;
         this.smsVerificationCodeFeignClient = smsVerificationCodeFeignClient;
+        this.pathProp = pathProp;
+    }
+
+    @Override
+    public <T extends User> void resolvePath(T e) {
+        if (e == null) {
+            return;
+        }
+        val server = pathProp.getStaticServerPrefix();
+        if (TextUtils.isTrimedNotEmpty(e.getAvatar())) {
+            e.setAvatar(server + pathProp.getUserAvatarPath() + e.getAvatar());
+        }
     }
 
     @Override
@@ -130,7 +149,38 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
 
     @Override
     public String setAvatar(User user, MultipartFile avatarFile) {
-        
-        return null;
+        val path = pathProp.getStaticFilePath() + pathProp.getUserAvatarPath();
+        try {
+            val filename = MultipartFileUtil.save(avatarFile, path);
+            user.setAvatar(filename);
+            updateById(user);
+        } catch (IOException e) {
+            throw new InternalServerErrorException("保存头像文件失败！", e);
+        }
+        resolvePath(user);
+        return user.getAvatar();
+    }
+
+    @Override
+    public User updatePhone(User user, String smsTraceId, String verificationCode) {
+        VerifySmsCodeParam param = new VerifySmsCodeParam();
+        param.setTraceNo(smsTraceId);
+        param.setVerificationCode(verificationCode);
+        val res = smsVerificationCodeFeignClient.verifySmsCodeAndGetPhoneNumber(param);
+        checkResult(res);
+        val phone = res.getData();
+        user.setPhone(phone);
+        return updateById(user);
+    }
+
+    /**
+     * 检查返回数据
+     *
+     * @param res 返回数据
+     */
+    private void checkResult(GeneralResult<?> res) {
+        if (res.getCode() != HttpStatus.OK.value()) {
+            throw new InternalServerErrorException(res.getMsg());
+        }
     }
 }

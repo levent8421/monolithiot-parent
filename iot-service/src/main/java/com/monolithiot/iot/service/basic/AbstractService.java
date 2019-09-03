@@ -5,6 +5,7 @@ import com.monolithiot.iot.commons.entity.AbstractEntity;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Create by 郭文梁 2019/5/18 0018 11:15
@@ -163,4 +164,30 @@ public interface AbstractService<Entity extends AbstractEntity> {
      * @param id ID
      */
     void requireExistsById(Integer id);
+
+    /**
+     * 处理实体类中的路径url等信息
+     *
+     * @param e 实体对象
+     */
+    <T extends Entity> void resolvePath(T e);
+
+    /**
+     * 处理实体类中的路径url等信息
+     *
+     * @param source entity list
+     * @return entity list
+     */
+    default <T extends Entity> List<T> resolvePath(List<T> source) {
+        return source.stream().peek(this::resolvePath).collect(Collectors.toList());
+    }
+
+    /**
+     * 处理实体类中的路径url等信息
+     *
+     * @param source entity pageInfo
+     */
+    default <T extends Entity> void resolvePath(PageInfo<T> source) {
+        source.setList(this.resolvePath(source.getList()));
+    }
 }

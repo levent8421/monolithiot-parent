@@ -51,4 +51,14 @@ public interface UserService extends AbstractService<User> {
      * @return 图片文件访问路径
      */
     String setAvatar(User user, MultipartFile avatarFile);
+
+    /**
+     * Update user phone by sms verification code
+     *
+     * @param user             user
+     * @param smsTraceId       sms verification code trade id
+     * @param verificationCode verification code
+     * @return User
+     */
+    User updatePhone(User user, String smsTraceId, String verificationCode);
 }

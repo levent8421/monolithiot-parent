@@ -74,4 +74,13 @@ public interface SmsVerificationCodeService extends AbstractService<SmsVerificat
      */
     @NotNull
     SmsVerificationCode requireByTraceNo(String traceNo);
+
+    /**
+     * 验证并获取验证码对象
+     *
+     * @param traceNo          TradeId
+     * @param verificationCode 验证码
+     * @return SmsVerificationCode
+     */
+    SmsVerificationCode verifyAndGet(String traceNo, String verificationCode);
 }

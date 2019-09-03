@@ -193,4 +193,9 @@ public abstract class AbstractServiceImpl<Entity extends AbstractEntity> impleme
             throw new ResourceNotFoundException(entityClass, id);
         }
     }
+
+    @Override
+    public <T extends Entity> void resolvePath(T e) {
+        // Do Nothing
+    }
 }
