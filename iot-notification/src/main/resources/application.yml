@@ -10,6 +10,18 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  mail:
+    host: smtp.monolithiot.com
+    username: info@monolithiot.com
+    password: MonolithInfo2018
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+          enable: true
+          required: true
 pagehelper:
   helper-dialect: mysql
 mybatis:
@@ -24,3 +36,4 @@ eureka:
     fetch-registry: true
 sms:
   apiKey: 472dde7539dfb2c0ea2107be4d34dc63
+
