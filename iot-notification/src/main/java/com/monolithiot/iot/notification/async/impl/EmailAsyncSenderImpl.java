@@ -5,6 +5,7 @@ import com.monolithiot.iot.notification.async.EmailAsyncSender;
 import com.monolithiot.iot.notification.dto.EmailData;
 import com.monolithiot.iot.notification.entity.Email;
 import com.monolithiot.iot.notification.mapper.EmailMapper;
+import com.monolithiot.iot.notification.template.TemplateCache;
 import com.monolithiot.iot.notification.util.EmailUtils;
 import com.monolithiot.iot.service.basic.impl.AbstractServiceImpl;
 import com.rabbitmq.client.Channel;
@@ -45,14 +46,17 @@ public class EmailAsyncSenderImpl extends AbstractServiceImpl<Email> implements 
     private final EmailMapper emailMapper;
     private final RabbitTemplate rabbitTemplate;
     private final JavaMailSender javaMailSender;
+    private final TemplateCache templateCache;
 
     public EmailAsyncSenderImpl(EmailMapper mapper,
                                 RabbitTemplate rabbitTemplate,
-                                JavaMailSender javaMailSender) {
+                                JavaMailSender javaMailSender,
+                                TemplateCache templateCache) {
         super(mapper);
         this.emailMapper = mapper;
         this.rabbitTemplate = rabbitTemplate;
         this.javaMailSender = javaMailSender;
+        this.templateCache = templateCache;
     }
 
     @Override
@@ -101,15 +105,46 @@ public class EmailAsyncSenderImpl extends AbstractServiceImpl<Email> implements 
     public void doSend(Message<EmailData> message, Channel channel) throws IOException {
         val deliveryTag = (Long) message.getHeaders().get(AmqpHeaders.DELIVERY_TAG);
         EmailData emailData = message.getPayload();
+        emailData.setTraceId(RandomUtils.randomPrettyUUIDString());
+
         log.info("Resolve task: send email [{}] to [{}]", emailData.getSubject(), emailData.getTarget());
+        renderEmailContent(emailData);
         try {
             EmailUtils.sendMimeMessage(javaMailSender, emailData);
+            saveEmail(emailData);
             ack(deliveryTag, channel, true);
             log.info("Send email success, target=[{}]!", emailData.getTarget());
         } catch (MessagingException e) {
             log.warn("Error on send email [{}] to [{}]", emailData.getSubject(), emailData.getTarget());
             ack(deliveryTag, channel, false);
         }
+    }
+
+    /**
+     * Render send content
+     *
+     * @param emailData email data
+     */
+    private void renderEmailContent(EmailData emailData) {
+        val content = templateCache.render(emailData.getTemplateName(), emailData);
+        emailData.setContentText(content);
+    }
+
+    /**
+     * Save Email to database
+     *
+     * @param emailData email data
+     */
+    private void saveEmail(EmailData emailData) {
+        val email = new Email();
+        email.setUserId(emailData.getUserId());
+        email.setTraceId(emailData.getTraceId());
+        email.setTarget(emailData.getTarget());
+        email.setSubject(emailData.getSubject());
+        email.setContentText(emailData.getContentText());
+        email.setIntention(emailData.getIntention());
+        val saveRes = save(email);
+        log.info("Save Email [{}],[{}]", saveRes.getTraceId(), saveRes.getTarget());
     }
 
     /**

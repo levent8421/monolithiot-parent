@@ -2,6 +2,7 @@ package com.monolithiot.iot.notification.util;
 
 import com.monolithiot.iot.commons.exception.InternalServerErrorException;
 import com.monolithiot.iot.notification.dto.EmailData;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,6 +20,7 @@ import javax.mail.internet.MimeMessage;
  * @author 郭文梁
  * @data 2019/9/5 18:37
  */
+@Slf4j
 public class EmailUtils {
     /**
      * Suppresses default constructor, ensuring non-instantiability.
@@ -39,7 +41,7 @@ public class EmailUtils {
         message.setFrom(from);
         message.setTo(emailData.getTarget());
         message.setSubject(emailData.getSubject());
-        message.setText(emailData.getContent());
+        message.setText(emailData.getContentText());
         sender.send(message);
     }
 
@@ -51,13 +53,16 @@ public class EmailUtils {
      * @throws MessagingException exception
      */
     public static void sendMimeMessage(JavaMailSender sender, EmailData emailData) throws MessagingException {
-        MimeMessage mimeMessage = sender.createMimeMessage();
-        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-        messageHelper.setFrom(emailData.getFrom());
-        messageHelper.setTo(emailData.getTarget());
-        messageHelper.setSubject(emailData.getSubject());
-        messageHelper.setText(emailData.getContent(), true);
-        sender.send(mimeMessage);
+        log.info("Send [{}] to [{}]", emailData.getContentText(), emailData.getTarget());
+        if ("linux".equals(System.getProperty("os.name"))) {
+            MimeMessage mimeMessage = sender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom(emailData.getFrom());
+            messageHelper.setTo(emailData.getTarget());
+            messageHelper.setSubject(emailData.getSubject());
+            messageHelper.setText(emailData.getContentText(), true);
+            sender.send(mimeMessage);
+        }
     }
 
     /**

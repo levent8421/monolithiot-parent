@@ -16,6 +16,14 @@ import java.io.Serializable;
 @Data
 public class EmailData implements Serializable {
     /**
+     * User Id
+     */
+    private Integer userId;
+    /**
+     * Trace Id
+     */
+    private String traceId;
+    /**
      * Email from
      */
     private InternetAddress from;
@@ -28,7 +36,19 @@ public class EmailData implements Serializable {
      */
     private String subject;
     /**
-     * Email Content
+     * Email Content template name
      */
-    private String content;
+    private String templateName;
+    /**
+     * Model object
+     */
+    private Object dataModel;
+    /**
+     * Intention
+     */
+    private Integer intention;
+    /**
+     * Render result
+     */
+    private String contentText;
 }
