@@ -2,6 +2,9 @@ package com.monolithiot.iot.notification.dto;
 
 import lombok.Data;
 
+import javax.mail.internet.InternetAddress;
+import java.io.Serializable;
+
 /**
  * Create by 郭文梁 2019/9/5 18:42
  * EmailData
@@ -11,7 +14,11 @@ import lombok.Data;
  * @data 2019/9/5 18:42
  */
 @Data
-public class EmailData {
+public class EmailData implements Serializable {
+    /**
+     * Email from
+     */
+    private InternetAddress from;
     /**
      * Send target
      */
