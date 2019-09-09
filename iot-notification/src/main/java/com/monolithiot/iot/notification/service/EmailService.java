@@ -20,4 +20,12 @@ public interface EmailService extends AbstractService<Email> {
      * @return Send Result
      */
     Email sendRegisterEmail(String recipient);
+
+    /**
+     * send email for update user`s email
+     *
+     * @param userId    user id
+     * @param recipient 接收者
+     */
+    void sendUpdateEmail(Integer userId, String recipient);
 }

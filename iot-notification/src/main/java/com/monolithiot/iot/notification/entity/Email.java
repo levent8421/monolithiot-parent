@@ -24,6 +24,10 @@ public class Email extends AbstractEntity<Integer> {
      */
     public static final int INTENTION_REGISTER = 0x01;
     /**
+     * 意图：更新邮箱地址
+     */
+    public static final int INTENTION_UPDATE_EMAIL = 0x02;
+    /**
      * 记录号
      */
     @Column(name = "trace_id", nullable = false)

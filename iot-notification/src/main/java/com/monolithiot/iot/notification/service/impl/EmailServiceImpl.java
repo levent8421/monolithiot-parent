@@ -26,6 +26,8 @@ import javax.mail.internet.InternetAddress;
 public class EmailServiceImpl extends AbstractServiceImpl<Email> implements EmailService {
     private static final String REGISTER_EMAIL_TEMPLATE_NAME = "register-email.html";
     private static final String REGISTER_EMAIL_SUBJECT = "磐石电气注册邮件";
+    private static final String UPDATE_EMAIL_SUBJECT = "磐石电气_更新邮箱";
+    private static final String UPDATE_EMAIL_TEMPLATE_NAME = "update-email.html";
     private static final String EMAIL_FROM_NAME = "磐石电气";
     @Value("${spring.mail.username}")
     private String emailFrom;
@@ -61,4 +63,15 @@ public class EmailServiceImpl extends AbstractServiceImpl<Email> implements Emai
         return null;
     }
 
+    @Override
+    public void sendUpdateEmail(Integer userId, String recipient) {
+        val emailDate = new EmailData();
+        emailDate.setSubject(UPDATE_EMAIL_SUBJECT);
+        emailDate.setTarget(recipient);
+        emailDate.setTemplateName(UPDATE_EMAIL_TEMPLATE_NAME);
+        emailDate.setFrom(emailFromAddress);
+        emailDate.setIntention(Email.INTENTION_UPDATE_EMAIL);
+        emailDate.setUserId(userId);
+        emailAsyncSender.send(emailDate);
+    }
 }
