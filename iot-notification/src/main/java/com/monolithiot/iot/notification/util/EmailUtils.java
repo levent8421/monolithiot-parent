@@ -54,15 +54,13 @@ public class EmailUtils {
      */
     public static void sendMimeMessage(JavaMailSender sender, EmailData emailData) throws MessagingException {
         log.info("Send [{}] to [{}]", emailData.getContentText(), emailData.getTarget());
-        if ("linux".equals(System.getProperty("os.name"))) {
-            MimeMessage mimeMessage = sender.createMimeMessage();
-            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setFrom(emailData.getFrom());
-            messageHelper.setTo(emailData.getTarget());
-            messageHelper.setSubject(emailData.getSubject());
-            messageHelper.setText(emailData.getContentText(), true);
-            sender.send(mimeMessage);
-        }
+        MimeMessage mimeMessage = sender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+        messageHelper.setFrom(emailData.getFrom());
+        messageHelper.setTo(emailData.getTarget());
+        messageHelper.setSubject(emailData.getSubject());
+        messageHelper.setText(emailData.getContentText(), true);
+        sender.send(mimeMessage);
     }
 
     /**

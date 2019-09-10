@@ -1,11 +1,13 @@
 package com.monolithiot.iot.user.service.general.impl;
 
+import com.monolithiot.iot.commons.dto.EmailDto;
 import com.monolithiot.iot.commons.dto.UserLoginDto;
 import com.monolithiot.iot.commons.exception.BadRequestException;
 import com.monolithiot.iot.commons.exception.InternalServerErrorException;
 import com.monolithiot.iot.commons.prop.PathProp;
 import com.monolithiot.iot.commons.token.AccessToken;
 import com.monolithiot.iot.commons.utils.MultipartFileUtil;
+import com.monolithiot.iot.commons.utils.ParamChecker;
 import com.monolithiot.iot.commons.utils.TextUtils;
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.commons.vo.notification.VerifySmsCodeParam;
@@ -13,16 +15,18 @@ import com.monolithiot.iot.service.basic.impl.AbstractServiceImpl;
 import com.monolithiot.iot.service.encrypt.PasswordEncryptor;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.repository.UserMapper;
-import com.monolithiot.iot.user.service.feign.SmsVerificationCodeFeignClient;
+import com.monolithiot.iot.user.service.feign.NotificationFeignClient;
 import com.monolithiot.iot.user.service.general.UserService;
 import com.monolithiot.iot.user.service.listener.UserRegisterListener;
 import com.monolithiot.iot.user.token.UserAccessToken;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Create by 郭文梁 2019/6/15 0015 17:21
@@ -33,6 +37,7 @@ import java.io.IOException;
  * @data 2019/6/15 0015
  */
 @Service
+@Slf4j
 public class UserServiceImpl extends AbstractServiceImpl<User> implements UserService {
     /**
      * 默认令牌有效期 20周
@@ -40,17 +45,17 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     private static final long DEFAULT_ACCESS_TOKEN_EXPIRE_IN = 20L * 7L * 24L * 60L * 60L * 1000L;
     private final UserMapper userMapper;
     private final PasswordEncryptor passwordEncryptor;
-    private final SmsVerificationCodeFeignClient smsVerificationCodeFeignClient;
+    private final NotificationFeignClient notificationFeignClient;
     private final PathProp pathProp;
 
     public UserServiceImpl(UserMapper mapper,
                            PasswordEncryptor passwordEncryptor,
-                           SmsVerificationCodeFeignClient smsVerificationCodeFeignClient,
+                           NotificationFeignClient notificationFeignClient,
                            PathProp pathProp) {
         super(mapper);
         this.userMapper = mapper;
         this.passwordEncryptor = passwordEncryptor;
-        this.smsVerificationCodeFeignClient = smsVerificationCodeFeignClient;
+        this.notificationFeignClient = notificationFeignClient;
         this.pathProp = pathProp;
     }
 
@@ -140,7 +145,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
         VerifySmsCodeParam param = new VerifySmsCodeParam();
         param.setTraceNo(traceNo);
         param.setVerificationCode(code);
-        final GeneralResult<Boolean> res = smsVerificationCodeFeignClient.verifySmsCode(param);
+        final GeneralResult<Boolean> res = notificationFeignClient.verifySmsCode(param);
         if (res.getCode() != HttpStatus.OK.value()) {
             throw new InternalServerErrorException(res.getMsg());
         }
@@ -166,7 +171,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
         VerifySmsCodeParam param = new VerifySmsCodeParam();
         param.setTraceNo(smsTraceId);
         param.setVerificationCode(verificationCode);
-        val res = smsVerificationCodeFeignClient.verifySmsCodeAndGetPhoneNumber(param);
+        val res = notificationFeignClient.verifySmsCodeAndGetPhoneNumber(param);
         checkResult(res);
         val phone = res.getData();
         user.setPhone(phone);
@@ -182,5 +187,18 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
         if (res.getCode() != HttpStatus.OK.value()) {
             throw new InternalServerErrorException(res.getMsg());
         }
+    }
+
+    @Override
+    public void bindEmailByTraceId(String traceId) {
+        val email = notificationFeignClient.findEmailByTraceId(traceId);
+        ParamChecker.notNull(email.getUserId(), BadRequestException.class, "该链接无效！");
+        if (!Objects.equals(email.getIntention(), EmailDto.INTENTION_UPDATE_EMAIL)) {
+            throw new BadRequestException("该邮件不能作为更新邮箱地址验证邮件使用！");
+        }
+        val user = require(email.getUserId());
+        user.setEmail(email.getTarget());
+        updateById(user);
+        log.info("Update user`s [{}] email to [{}]!", user.getId(), email.getTarget());
     }
 }

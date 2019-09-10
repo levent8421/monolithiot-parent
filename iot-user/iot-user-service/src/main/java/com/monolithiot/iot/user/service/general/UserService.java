@@ -61,4 +61,11 @@ public interface UserService extends AbstractService<User> {
      * @return User
      */
     User updatePhone(User user, String smsTraceId, String verificationCode);
+
+    /**
+     * Bind user email by notification trace id
+     *
+     * @param traceId traceId
+     */
+    void bindEmailByTraceId(String traceId);
 }

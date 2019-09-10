@@ -1,16 +1,15 @@
 package com.monolithiot.iot.user.service.feign;
 
 import com.monolithiot.iot.commons.context.ApplicationConstants;
+import com.monolithiot.iot.commons.dto.EmailDto;
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.commons.vo.notification.VerifySmsCodeParam;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Create By leven ont 2019/6/21 21:48
- * Class Name :[SmsVerificationCodeFeignClient]
+ * Class Name :[NotificationFeignClient]
  * <p>
  * 短信验证码Feign客户端
  *
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @FeignClient(ApplicationConstants.Service.NOTIFICATION)
 @RequestMapping("/api")
-public interface SmsVerificationCodeFeignClient {
+public interface NotificationFeignClient {
     /**
      * 检验短信验证码
      *
@@ -37,4 +36,12 @@ public interface SmsVerificationCodeFeignClient {
     @PostMapping("/sms-verification-code/verify-and-get")
     GeneralResult<String> verifySmsCodeAndGetPhoneNumber(@RequestBody VerifySmsCodeParam param);
 
+    /**
+     * Find email by traceId
+     *
+     * @param traceId traceId
+     * @return Email
+     */
+    @GetMapping("/email/traceId/{traceId}")
+    EmailDto findEmailByTraceId(@PathVariable("traceId") String traceId);
 }

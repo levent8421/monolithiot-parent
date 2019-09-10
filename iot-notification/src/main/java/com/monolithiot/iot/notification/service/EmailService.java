@@ -28,4 +28,12 @@ public interface EmailService extends AbstractService<Email> {
      * @param recipient 接收者
      */
     void sendUpdateEmail(Integer userId, String recipient);
+
+    /**
+     * Find by traceId , throw ResourceNotFountException when it could not be found
+     *
+     * @param traceId traceId
+     * @return Email
+     */
+    Email requireByTraceId(String traceId);
 }

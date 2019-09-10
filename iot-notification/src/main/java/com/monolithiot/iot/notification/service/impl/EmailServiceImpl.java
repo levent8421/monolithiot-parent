@@ -1,5 +1,6 @@
 package com.monolithiot.iot.notification.service.impl;
 
+import com.monolithiot.iot.commons.exception.ResourceNotFoundException;
 import com.monolithiot.iot.notification.async.EmailAsyncSender;
 import com.monolithiot.iot.notification.dto.EmailData;
 import com.monolithiot.iot.notification.entity.Email;
@@ -65,13 +66,24 @@ public class EmailServiceImpl extends AbstractServiceImpl<Email> implements Emai
 
     @Override
     public void sendUpdateEmail(Integer userId, String recipient) {
-        val emailDate = new EmailData();
-        emailDate.setSubject(UPDATE_EMAIL_SUBJECT);
-        emailDate.setTarget(recipient);
-        emailDate.setTemplateName(UPDATE_EMAIL_TEMPLATE_NAME);
-        emailDate.setFrom(emailFromAddress);
-        emailDate.setIntention(Email.INTENTION_UPDATE_EMAIL);
-        emailDate.setUserId(userId);
-        emailAsyncSender.send(emailDate);
+        val emailData = new EmailData();
+        emailData.setSubject(UPDATE_EMAIL_SUBJECT);
+        emailData.setTarget(recipient);
+        emailData.setTemplateName(UPDATE_EMAIL_TEMPLATE_NAME);
+        emailData.setFrom(emailFromAddress);
+        emailData.setIntention(Email.INTENTION_UPDATE_EMAIL);
+        emailData.setUserId(userId);
+        emailAsyncSender.send(emailData);
+    }
+
+    @Override
+    public Email requireByTraceId(String traceId) {
+        val query = new Email();
+        query.setTraceId(traceId);
+        val res = findOneByQuery(query);
+        if (res == null) {
+            throw new ResourceNotFoundException("The Email for traceId [" + traceId + "] could not be found!");
+        }
+        return res;
     }
 }

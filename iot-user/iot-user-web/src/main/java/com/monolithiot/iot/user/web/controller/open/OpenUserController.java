@@ -7,6 +7,10 @@ import com.monolithiot.iot.user.service.general.UserService;
 import com.monolithiot.iot.user.service.listener.UserRegisterListener;
 import com.monolithiot.iot.user.web.vo.UserRegisterParam;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.monolithiot.iot.commons.utils.ParamChecker.notEmpty;
 import static com.monolithiot.iot.commons.utils.ParamChecker.notNull;
@@ -97,5 +101,23 @@ public class OpenUserController {
         target.setName(param.getName());
         target.setPassword(param.getPassword());
         target.setPhone(param.getPhone());
+    }
+
+    /**
+     * Bind email by email trace id
+     *
+     * @param traceId email trace Id
+     * @return ModelAndView
+     */
+    @GetMapping("/bind-email/{emailTraceId}")
+    public ModelAndView bindEmail(@PathVariable("emailTraceId") String traceId) {
+        Map<String, Object> model = new HashMap<>(16);
+        try {
+            userService.bindEmailByTraceId(traceId);
+            model.put("msg", "绑定成功");
+        } catch (Exception e) {
+            model.put("msg", "绑定失败，" + e.getMessage());
+        }
+        return new ModelAndView("bind-email-result", model);
     }
 }

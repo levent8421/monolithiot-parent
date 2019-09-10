@@ -1,5 +1,6 @@
 package com.monolithiot.iot.notification.entity;
 
+import com.monolithiot.iot.commons.dto.EmailDto;
 import com.monolithiot.iot.commons.entity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,11 +23,11 @@ public class Email extends AbstractEntity<Integer> {
     /**
      * 意图：注册
      */
-    public static final int INTENTION_REGISTER = 0x01;
+    public static final int INTENTION_REGISTER = EmailDto.INTENTION_REGISTER;
     /**
      * 意图：更新邮箱地址
      */
-    public static final int INTENTION_UPDATE_EMAIL = 0x02;
+    public static final int INTENTION_UPDATE_EMAIL = EmailDto.INTENTION_UPDATE_EMAIL;
     /**
      * 记录号
      */
