@@ -8,6 +8,10 @@ spring:
   output:
     ansi:
       enabled: always
+  rabbitmq:
+    addresses: localhost:5672
+    username: admin
+    password: 111111
 eureka:
   client:
     service-url:
