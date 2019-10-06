@@ -37,6 +37,11 @@ public class User extends AbstractIntegerIdEntity {
     @Column(name = "name", nullable = false)
     private String name;
     /**
+     * 昵称
+     */
+    @Column(name = "nickname")
+    private String nickname;
+    /**
      * 密码
      */
     @Column(name = "password", nullable = false)

@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Create by 郭文梁 2019/8/20 16:16
@@ -77,5 +79,23 @@ public class MeasureDataController extends AbstractController {
         Integer userId = requireCurrentUserId(request);
         Page<MeasureData> res = measureDataService.findByUserId(userId, page, rows);
         return GeneralResult.ok(res);
+    }
+
+    /**
+     * 查询当前用户所有测量数据的Id
+     *
+     * @param page page
+     * @param rows rows
+     * @return GR
+     */
+    @GetMapping("/mine/id-list")
+    public GeneralResult<List<String>> findDataIdsByCurrentUser(HttpServletRequest request,
+                                                                Integer page, Integer rows) {
+        page = defaultPage(page);
+        rows = defaultRows(rows);
+        val userId = requireCurrentUserId(request);
+        Page<MeasureData> res = measureDataService.findByUserId(userId, page, rows);
+        val idList = res.getContent().stream().map(MeasureData::getId).collect(Collectors.toList());
+        return GeneralResult.ok(idList);
     }
 }

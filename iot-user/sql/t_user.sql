@@ -36,3 +36,6 @@ select u.id          u_id,
        u.deleted     u_deleted
 from t_user as u
 where u.deleted = false;
+
+alter table t_user
+    add column nickname varchar(255) null after name;

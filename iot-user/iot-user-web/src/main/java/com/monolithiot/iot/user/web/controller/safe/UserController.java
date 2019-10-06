@@ -93,6 +93,8 @@ public class UserController extends AbstractEntityController<User> {
         target.setDistrict(param.getDistrict());
         target.setAddress(param.getAddress());
         target.setIndustry(param.getIndustry());
+        target.setNickname(param.getNickname());
+        target.setPhone(param.getPhone());
     }
 
     /**

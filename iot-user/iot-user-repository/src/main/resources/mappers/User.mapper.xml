@@ -4,6 +4,7 @@
     <sql id="columns">
         u.id          u_id,
         u.name        u_name,
+        u.nickname u_nickname,
         u.password    u_password,
         u.phone       u_phone,
         u.email       u_email,
@@ -27,6 +28,7 @@
     <resultMap id="rm_base" type="com.monolithiot.iot.user.entity.User">
         <id column="u_id" property="id"/>
         <result column="u_name" property="name"/>
+        <result column="u_nickname" property="nickname"/>
         <result column="u_password" property="password"/>
         <result column="u_phone" property="phone"/>
         <result column="u_email" property="email"/>
