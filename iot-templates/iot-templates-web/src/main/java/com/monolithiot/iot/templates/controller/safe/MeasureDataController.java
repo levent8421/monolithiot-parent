@@ -10,7 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -89,13 +90,19 @@ public class MeasureDataController extends AbstractController {
      * @return GR
      */
     @GetMapping("/mine/id-list")
-    public GeneralResult<List<String>> findDataIdsByCurrentUser(HttpServletRequest request,
-                                                                Integer page, Integer rows) {
+    public GeneralResult<Map<String, Object>> findDataIdsByCurrentUser(HttpServletRequest request,
+                                                                       Integer page, Integer rows) {
         page = defaultPage(page);
         rows = defaultRows(rows);
         val userId = requireCurrentUserId(request);
         Page<MeasureData> res = measureDataService.findByUserId(userId, page, rows);
         val idList = res.getContent().stream().map(MeasureData::getId).collect(Collectors.toList());
-        return GeneralResult.ok(idList);
+        val total = res.getTotalElements();
+        val totalPage = res.getTotalPages();
+        val resMap = new HashMap<String, Object>(16);
+        resMap.put("totalEle", total);
+        resMap.put("totalPage", totalPage);
+        resMap.put("list", idList);
+        return GeneralResult.ok(resMap);
     }
 }
