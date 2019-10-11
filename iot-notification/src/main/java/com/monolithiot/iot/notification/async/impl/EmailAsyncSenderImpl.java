@@ -1,5 +1,6 @@
 package com.monolithiot.iot.notification.async.impl;
 
+import com.monolithiot.iot.commons.context.ApplicationConstants;
 import com.monolithiot.iot.commons.utils.RandomUtils;
 import com.monolithiot.iot.notification.async.EmailAsyncSender;
 import com.monolithiot.iot.notification.dto.EmailData;
@@ -8,16 +9,11 @@ import com.monolithiot.iot.notification.mapper.EmailMapper;
 import com.monolithiot.iot.notification.template.TemplateCache;
 import com.monolithiot.iot.notification.util.EmailUtils;
 import com.monolithiot.iot.service.basic.impl.AbstractServiceImpl;
-import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -25,7 +21,6 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +63,8 @@ public class EmailAsyncSenderImpl extends AbstractServiceImpl<Email> implements 
         Message<EmailData> message = MessageBuilder.createMessage(emailData, headers);
         CorrelationData randomId = randomId();
         log.info("Push Task: Send email [{}] to [{}]", emailData.getSubject(), emailData.getTarget());
-        rabbitTemplate.convertAndSend(EXCHANGE, "email.async.1", message, randomId);
+        rabbitTemplate.convertAndSend(ApplicationConstants.MessageQueue.EMAIL_EXCHANGE,
+                ApplicationConstants.MessageQueue.EMAIL_ROUTING, message, randomId);
     }
 
     /**
@@ -82,29 +78,12 @@ public class EmailAsyncSenderImpl extends AbstractServiceImpl<Email> implements 
     }
 
     /**
-     * Do send email
+     * Do Send Email
      *
-     * @param message message from queue
-     * @param channel chanel
+     * @param emailData email data
      */
-    @RabbitListener(
-            bindings = @QueueBinding(
-                    value = @Queue(
-                            value = "email.queue",
-                            declare = "false"
-                    ),
-                    exchange = @Exchange(
-                            value = EXCHANGE,
-                            declare = "false",
-                            type = "topic",
-                            ignoreDeclarationExceptions = "true"
-                    ),
-                    key = ROUTING_KEY
-            )
-    )
-    public void doSend(Message<EmailData> message, Channel channel) throws IOException {
-        val deliveryTag = (Long) message.getHeaders().get(AmqpHeaders.DELIVERY_TAG);
-        EmailData emailData = message.getPayload();
+    @RabbitListener(queues = ApplicationConstants.MessageQueue.EMAIL_QUEUE_NAME)
+    public void doSend(EmailData emailData) {
         emailData.setTraceId(RandomUtils.randomPrettyUUIDString());
 
         log.info("Resolve task: send email [{}] to [{}]", emailData.getSubject(), emailData.getTarget());
@@ -112,11 +91,9 @@ public class EmailAsyncSenderImpl extends AbstractServiceImpl<Email> implements 
         try {
             EmailUtils.sendMimeMessage(javaMailSender, emailData);
             saveEmail(emailData);
-            ack(deliveryTag, channel, true);
             log.info("Send email success, target=[{}]!", emailData.getTarget());
         } catch (MessagingException e) {
             log.warn("Error on send email [{}] to [{}]", emailData.getSubject(), emailData.getTarget());
-            ack(deliveryTag, channel, false);
         }
     }
 
@@ -145,23 +122,5 @@ public class EmailAsyncSenderImpl extends AbstractServiceImpl<Email> implements 
         email.setIntention(emailData.getIntention());
         val saveRes = save(email);
         log.info("Save Email [{}],[{}]", saveRes.getTraceId(), saveRes.getTarget());
-    }
-
-    /**
-     * Message Ack
-     *
-     * @param deliveryTag deliveryTag
-     * @param channel     chanel
-     * @param success     success flag
-     * @throws IOException IOE
-     */
-    private void ack(Long deliveryTag, Channel channel, boolean success) throws IOException {
-        if (deliveryTag != null) {
-            if (success) {
-                channel.basicAck(deliveryTag, false);
-            } else {
-                channel.basicNack(deliveryTag, false, false);
-            }
-        }
     }
 }

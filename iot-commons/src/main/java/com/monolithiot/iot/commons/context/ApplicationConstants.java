@@ -90,4 +90,10 @@ public class ApplicationConstants {
          */
         public static final String NOTIFICATION = "notification-service";
     }
+
+    public static class MessageQueue {
+        public static final String EMAIL_QUEUE_NAME = "monolithiot.notification.email";
+        public static final String EMAIL_EXCHANGE = "monolithiot.notification.email";
+        public static final String EMAIL_ROUTING = "monolithiot.notification.email";
+    }
 }
