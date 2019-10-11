@@ -20,6 +20,10 @@ public class EmailDto {
      * 意图：更新邮箱地址
      */
     public static final int INTENTION_UPDATE_EMAIL = 0x02;
+    /**
+     * 意图： 重置密码
+     */
+    public static final int INTENTION_RESET_PASSWORD = 0x03;
     private String target;
     private String subject;
     private Integer userId;

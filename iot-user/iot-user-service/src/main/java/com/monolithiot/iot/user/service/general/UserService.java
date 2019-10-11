@@ -68,4 +68,12 @@ public interface UserService extends AbstractService<User> {
      * @param traceId traceId
      */
     void bindEmailByTraceId(String traceId);
+
+    /**
+     * Exists By email
+     *
+     * @param email email
+     * @return exists?
+     */
+    boolean existsByEmail(String email);
 }

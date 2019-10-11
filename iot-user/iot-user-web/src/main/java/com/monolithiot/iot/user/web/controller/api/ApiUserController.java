@@ -3,16 +3,12 @@ package com.monolithiot.iot.user.web.controller.api;
 import com.monolithiot.iot.commons.dto.UserLoginDto;
 import com.monolithiot.iot.commons.exception.BadRequestException;
 import com.monolithiot.iot.commons.token.AccessToken;
-import com.monolithiot.iot.commons.utils.HttpRequestUtils;
 import com.monolithiot.iot.commons.utils.ParamChecker;
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.service.general.UserService;
 import com.monolithiot.iot.web.advice.AbstractEntityController;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
 
 /**
  * Create by 郭文梁 2019/6/18 0018 18:05
@@ -60,5 +56,16 @@ public class ApiUserController extends AbstractEntityController<User> {
         ParamChecker.notNull(param, ex, "参数未传");
         ParamChecker.notEmpty(param.getLoginName(), ex, "登录名必填");
         ParamChecker.notEmpty(param.getPassword(), ex, "密码必填");
+    }
+
+    /**
+     * 通过email判断用户是否存在
+     *
+     * @param email email
+     * @return 是否存在
+     */
+    @GetMapping("/exists/email")
+    public boolean existsByEmail(@RequestParam("email") String email) {
+        return userService.existsByEmail(email);
     }
 }

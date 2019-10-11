@@ -36,4 +36,11 @@ public interface EmailService extends AbstractService<Email> {
      * @return Email
      */
     Email requireByTraceId(String traceId);
+
+    /**
+     * 发送忘记密码的邮件
+     *
+     * @param email 发送目标
+     */
+    void sendForgetPasswordEmail(String email);
 }

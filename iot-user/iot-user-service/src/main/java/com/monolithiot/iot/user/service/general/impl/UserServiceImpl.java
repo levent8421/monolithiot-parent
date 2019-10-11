@@ -201,4 +201,11 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
         updateById(user);
         log.info("Update user`s [{}] email to [{}]!", user.getId(), email.getTarget());
     }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        val query = new User();
+        query.setEmail(email);
+        return exists(query);
+    }
 }

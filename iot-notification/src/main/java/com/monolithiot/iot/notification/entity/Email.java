@@ -29,6 +29,10 @@ public class Email extends AbstractEntity<Integer> {
      */
     public static final int INTENTION_UPDATE_EMAIL = EmailDto.INTENTION_UPDATE_EMAIL;
     /**
+     * 意图：重置密码
+     */
+    public static final int INTENTION_RESET_PASSWORD = EmailDto.INTENTION_RESET_PASSWORD;
+    /**
      * 记录号
      */
     @Column(name = "trace_id", nullable = false)

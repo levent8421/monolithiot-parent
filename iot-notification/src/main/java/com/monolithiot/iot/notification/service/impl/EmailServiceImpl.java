@@ -28,7 +28,9 @@ public class EmailServiceImpl extends AbstractServiceImpl<Email> implements Emai
     private static final String REGISTER_EMAIL_TEMPLATE_NAME = "register-email.html";
     private static final String REGISTER_EMAIL_SUBJECT = "磐石电气注册邮件";
     private static final String UPDATE_EMAIL_SUBJECT = "磐石电气_更新邮箱";
+    private static final String FORGET_PASSWORD_EMAIL_SUBJECT = "磐石电气_重置密码";
     private static final String UPDATE_EMAIL_TEMPLATE_NAME = "update-email.html";
+    private static final String FORGET_PASSWORD_EMAIL_TEMPLATE_NAME = "forget-password-email.html";
     private static final String EMAIL_FROM_NAME = "磐石电气";
     @Value("${spring.mail.username}")
     private String emailFrom;
@@ -85,5 +87,16 @@ public class EmailServiceImpl extends AbstractServiceImpl<Email> implements Emai
             throw new ResourceNotFoundException("The Email for traceId [" + traceId + "] could not be found!");
         }
         return res;
+    }
+
+    @Override
+    public void sendForgetPasswordEmail(String email) {
+        val emailData = new EmailData();
+        emailData.setSubject(FORGET_PASSWORD_EMAIL_SUBJECT);
+        emailData.setTarget(email);
+        emailData.setTemplateName(FORGET_PASSWORD_EMAIL_TEMPLATE_NAME);
+        emailData.setFrom(emailFromAddress);
+        emailData.setIntention(Email.INTENTION_RESET_PASSWORD);
+        emailAsyncSender.send(emailData);
     }
 }
