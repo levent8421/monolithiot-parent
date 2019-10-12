@@ -5,7 +5,9 @@ import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.service.general.UserService;
 import com.monolithiot.iot.user.service.listener.UserRegisterListener;
+import com.monolithiot.iot.user.web.vo.ResetPasswordParam;
 import com.monolithiot.iot.user.web.vo.UserRegisterParam;
+import lombok.val;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -119,5 +121,44 @@ public class OpenUserController {
             model.put("msg", "绑定失败，" + e.getMessage());
         }
         return new ModelAndView("bind-email-result", model);
+    }
+
+    /**
+     * 进入重置密码页面
+     *
+     * @param emailTradeId 邮箱tradeId
+     * @return MV
+     */
+    @GetMapping("/reset-password/{emailTradeId}")
+    public ModelAndView resetPassword(@PathVariable("emailTradeId") String emailTradeId) {
+        val viewName = "reset-password";
+        val model = new HashMap<String, Object>(16);
+        model.put("traceId", emailTradeId);
+        return new ModelAndView(viewName, model);
+    }
+
+    /**
+     * Reset password
+     *
+     * @param params params
+     * @return GR
+     */
+    @PostMapping("/reset-password-by-trade-id")
+    public GeneralResult<Void> resetPasswordByEmailTradeId(@RequestBody ResetPasswordParam params) {
+        checkResetPasswordParam(params);
+        userService.resetPasswordByEmailTradeId(params.getTradeId(), params.getPassword());
+        return GeneralResult.ok();
+    }
+
+    /**
+     * Check reset password param
+     *
+     * @param param param object
+     */
+    private void checkResetPasswordParam(ResetPasswordParam param) {
+        val ex = BadRequestException.class;
+        notNull(param, ex, "参数未传！");
+        notEmpty(param.getTradeId(), ex, "TradeId is required!");
+        notEmpty(param.getPassword(), ex, "Password is required!");
     }
 }

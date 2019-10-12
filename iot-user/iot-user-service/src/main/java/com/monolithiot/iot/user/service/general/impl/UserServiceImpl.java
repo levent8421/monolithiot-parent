@@ -208,4 +208,31 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
         query.setEmail(email);
         return exists(query);
     }
+
+    @Override
+    public void resetPasswordByEmailTradeId(String tradeId, String password) {
+        val email = notificationFeignClient.findEmailByTraceId(tradeId);
+        if (email == null) {
+            throw new BadRequestException("链接无效或已过期！");
+        }
+        val eamil = email.getTarget();
+        val user = findByEmail(eamil);
+        if (user == null) {
+            throw new BadRequestException("该邮箱已失效！");
+        }
+        user.setPassword(passwordEncryptor.encode(password));
+        updateById(user);
+    }
+
+    /**
+     * Find User by email
+     *
+     * @param email email
+     * @return user
+     */
+    private User findByEmail(String email) {
+        val query = new User();
+        query.setEmail(email);
+        return findOneByQuery(query);
+    }
 }

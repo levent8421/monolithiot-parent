@@ -76,4 +76,12 @@ public interface UserService extends AbstractService<User> {
      * @return exists?
      */
     boolean existsByEmail(String email);
+
+    /**
+     * Reset password by email trace id
+     *
+     * @param tradeId  trace id
+     * @param password new password
+     */
+    void resetPasswordByEmailTradeId(String tradeId, String password);
 }
