@@ -36,4 +36,14 @@ public interface UserMapper extends AbstractMapper<User> {
     User selectByNameOrPhoneOrEmail(@Param("name") String name,
                                     @Param("phone") String phone,
                                     @Param("email") String email);
+
+    /**
+     * 递增连续签到天数
+     *
+     * @param userId 用户ID
+     * @param amount 递增值
+     * @return rows
+     */
+    int incConsecutiveSignInCount(@Param("userId") Integer userId,
+                                   @Param("amount") int amount);
 }

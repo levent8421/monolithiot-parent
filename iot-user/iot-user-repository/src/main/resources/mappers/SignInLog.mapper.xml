@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.monolithiot.iot.user.repository.SignInLogMapper">
+    <sql id="columns">
+        sil.id           sil_id,
+        sil.user_id      sil_user_id,
+        sil.sign_in_date sil_sign_in_date,
+        sil.create_time  sil_create_time,
+        sil.update_time  sil_update_time,
+        sil.deleted      sil_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_sign_in_log as sil
+        where sil.deleted = false
+    </sql>
+    <resultMap id="rm_base" type="com.monolithiot.iot.user.entity.SignInLog">
+        <id column="sil_id" property="id"/>
+        <result column="sil_user_id" property="userId"/>
+        <result column="sil_sign_in_date" property="signInDate"/>
+        <result column="sil_create_time" property="createTime"/>
+        <result column="sil_update_time" property="updateTime"/>
+        <result column="sil_deleted" property="deleted"/>
+    </resultMap>
+    <select id="selectDateAndUser" resultMap="rm_base">
+        <include refid="select"/>
+        and (sil.sign_in_date=date(#{date}) and sil.user_id=#{userId})
+        limit 1
+    </select>
+    <select id="selectByUserAndMonth" resultMap="rm_base">
+        <include refid="select"/>
+        and (sil.user_id=#{userId} and year(sil.create_time)=#{year} and month(sil.create_time)=#{month})
+    </select>
+</mapper>

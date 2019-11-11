@@ -3,6 +3,7 @@ package com.monolithiot.iot.commons.utils;
 import com.monolithiot.iot.commons.context.ApplicationConstants;
 import com.monolithiot.iot.commons.dto.DatetimeRange;
 import com.monolithiot.iot.commons.fn.Function;
+import lombok.val;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.text.ParseException;
@@ -242,5 +243,19 @@ public class DateTimeUtils {
             callback.exec(tmp);
             beginCalendar.add(field, step);
         }
+    }
+
+    /**
+     * Add Field
+     *
+     * @param base   base
+     * @param field  field
+     * @param amount amount
+     * @return Date
+     */
+    public static Date incField(Date base, int field, int amount) {
+        val calendar = calendar(base);
+        calendar.add(field, amount);
+        return calendar.getTime();
     }
 }

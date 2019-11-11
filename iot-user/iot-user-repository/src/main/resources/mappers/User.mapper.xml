@@ -15,6 +15,8 @@
         u.district    u_district,
         u.address     u_address,
         u.industry    u_industry,
+        u.point_score u_point_score,
+        u.consecutive_sign_in_count u_consecutive_sign_in_count,
         u.create_time u_create_time,
         u.update_time u_update_time,
         u.deleted     u_deleted
@@ -39,6 +41,8 @@
         <result column="u_district" property="district"/>
         <result column="u_address" property="address"/>
         <result column="u_industry" property="industry"/>
+        <result column="u_point_score" property="pointScore"/>
+        <result column="u_consecutive_sign_in_count" property="consecutiveSignInCount"/>
         <result column="u_create_time" property="createTime"/>
         <result column="u_update_time" property="updateTime"/>
         <result column="u_deleted" property="deleted"/>
@@ -52,4 +56,13 @@
         and ((u.name is not null and u.name=#{name}) or (u.phone is not null and u.phone=#{phone}) or (u.email is not
         null and u.email=#{email}))
     </select>
+    <update id="incConsecutiveSignInCount">
+        update t_user
+        set consecutive_sign_in_count=
+                case
+                    when consecutive_sign_in_count is null then #{amount}
+                    else (consecutive_sign_in_count + #{amount})
+                    end
+        where id = #{userId}
+    </update>
 </mapper>

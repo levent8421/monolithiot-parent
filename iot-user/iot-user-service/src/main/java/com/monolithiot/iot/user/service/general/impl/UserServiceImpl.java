@@ -235,4 +235,10 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
         query.setEmail(email);
         return findOneByQuery(query);
     }
+
+    @Override
+    public void incConsecutiveSignInCount(Integer userId, int amount) {
+        val resRow = userMapper.incConsecutiveSignInCount(userId, amount);
+        log.info("Inc ConsecutiveSignInCount userId=[{}], amount=[{}], rows=[{}]", userId, amount, resRow);
+    }
 }

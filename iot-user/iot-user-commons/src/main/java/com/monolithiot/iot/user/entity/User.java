@@ -91,4 +91,14 @@ public class User extends AbstractIntegerIdEntity {
      */
     @Column(name = "industry")
     private String industry;
+    /**
+     * 积分
+     */
+    @Column(name = "point_score", length = 10)
+    private Integer pointScore;
+    /**
+     * 连续签到天数
+     */
+    @Column(name = "consecutive_sign_in_count", length = 5)
+    private Integer consecutiveSignInCount;
 }

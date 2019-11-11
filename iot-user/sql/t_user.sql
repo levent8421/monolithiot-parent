@@ -39,3 +39,12 @@ where u.deleted = false;
 
 alter table t_user
     add column nickname varchar(255) null after name;
+
+alter table t_user
+    add column point_score int(10) null after industry;
+
+alter table t_user
+    add column consecutive_sign_in_count int(5) not null default 0 after point_score;
+
+alter table t_user
+    modify consecutive_sign_in_count int(5) null after point_score;

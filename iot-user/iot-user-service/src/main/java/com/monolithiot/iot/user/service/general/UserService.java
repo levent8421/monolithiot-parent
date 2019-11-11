@@ -84,4 +84,12 @@ public interface UserService extends AbstractService<User> {
      * @param password new password
      */
     void resetPasswordByEmailTradeId(String tradeId, String password);
+
+    /**
+     * 递增用户连续签到天数
+     *
+     * @param userId 用户ID
+     * @param amount 递增值
+     */
+    void incConsecutiveSignInCount(Integer userId, int amount);
 }

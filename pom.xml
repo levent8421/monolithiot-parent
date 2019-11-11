@@ -12,6 +12,7 @@
         <module>iot-zuul</module>
         <module>iot-notification</module>
         <module>iot-templates</module>
+        <module>iot-wechat</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
