@@ -3,6 +3,7 @@ package com.monolithiot.iot.user.service.listener.impl;
 import com.monolithiot.iot.user.service.general.UserService;
 import com.monolithiot.iot.user.service.listener.SignInListener;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -19,7 +20,18 @@ import java.util.Map;
 @Component
 @Slf4j
 public class SignInListenerImpl implements SignInListener {
+    /**
+     * 积分表
+     */
     private static final Map<Integer, Integer> SCORE_TABLE;
+    /**
+     * 最大签到连续签到数量
+     */
+    private static final int MAX_CONSECUTIVE_SIGN_IN_COUNT = 7;
+    /**
+     * 最多送积分数量
+     */
+    public static final int MAX_SCORE = 7;
 
     static {
         SCORE_TABLE = new HashMap<>();
@@ -47,7 +59,12 @@ public class SignInListenerImpl implements SignInListener {
 
     @Override
     public void onConsecutiveSignIn(int userId) {
-
+        val user = userService.require(userId);
+        val consecutiveSignInCount = user.getConsecutiveSignInCount();
+        int score = 0;
+        if (consecutiveSignInCount >= MAX_CONSECUTIVE_SIGN_IN_COUNT) {
+            score = MAX_SCORE;
+        }
     }
 
     @Override
