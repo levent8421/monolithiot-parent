@@ -45,5 +45,25 @@ public interface UserMapper extends AbstractMapper<User> {
      * @return rows
      */
     int incConsecutiveSignInCount(@Param("userId") Integer userId,
-                                   @Param("amount") int amount);
+                                  @Param("amount") int amount);
+
+    /**
+     * Update user`s consecutiveSignInCount by userId
+     *
+     * @param userId userId
+     * @param value  value
+     * @return rows
+     */
+    int updateConsecutiveSignInCountById(@Param("userId") int userId,
+                                         @Param("value") int value);
+
+    /**
+     * Increment User`s pointScore
+     *
+     * @param userId userId
+     * @param score  score
+     * @return rows
+     */
+    int incPointScore(@Param("userId") int userId,
+                      @Param("score") int score);
 }

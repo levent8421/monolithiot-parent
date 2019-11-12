@@ -3,7 +3,6 @@ package com.monolithiot.iot.user.web.controller.safe;
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.user.entity.SignInLog;
 import com.monolithiot.iot.user.service.general.SignInLogService;
-import com.monolithiot.iot.user.service.general.UserService;
 import com.monolithiot.iot.user.service.listener.SignInListener;
 import com.monolithiot.iot.web.advice.AbstractEntityController;
 import lombok.val;
@@ -24,7 +23,6 @@ import java.util.List;
 @RequestMapping("/sign-in-log")
 public class SignInLogController extends AbstractEntityController<SignInLog> {
     private final SignInLogService signInLogService;
-    private final UserService userService;
     private final SignInListener signInListener;
 
     /**
@@ -33,11 +31,9 @@ public class SignInLogController extends AbstractEntityController<SignInLog> {
      * @param signInLogService 业务组件
      */
     public SignInLogController(SignInLogService signInLogService,
-                               UserService userService,
                                SignInListener signInListener) {
         super(signInLogService);
         this.signInLogService = signInLogService;
-        this.userService = userService;
         this.signInListener = signInListener;
     }
 

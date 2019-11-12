@@ -31,7 +31,7 @@ public class SignInListenerImpl implements SignInListener {
     /**
      * 最多送积分数量
      */
-    public static final int MAX_SCORE = 7;
+    private static final int MAX_SCORE = 7;
 
     static {
         SCORE_TABLE = new HashMap<>();
@@ -60,15 +60,21 @@ public class SignInListenerImpl implements SignInListener {
     @Override
     public void onConsecutiveSignIn(int userId) {
         val user = userService.require(userId);
+        userService.incConsecutiveSignInCount(userId, 1);
         val consecutiveSignInCount = user.getConsecutiveSignInCount();
-        int score = 0;
+        int score;
         if (consecutiveSignInCount >= MAX_CONSECUTIVE_SIGN_IN_COUNT) {
             score = MAX_SCORE;
+        } else {
+            score = SCORE_TABLE.get(consecutiveSignInCount);
         }
+        userService.incPointScore(userId, score);
     }
 
     @Override
     public void onSignIn(int userId) {
-
+        int score = SCORE_TABLE.get(1);
+        userService.resetConsecutiveSignInCount(userId, 1);
+        userService.incPointScore(userId, score);
     }
 }

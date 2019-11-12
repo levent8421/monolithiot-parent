@@ -92,4 +92,20 @@ public interface UserService extends AbstractService<User> {
      * @param amount 递增值
      */
     void incConsecutiveSignInCount(Integer userId, int amount);
+
+    /**
+     * 重置连续登录天数
+     *
+     * @param userId 用户
+     * @param value  重置到的初始值
+     */
+    void resetConsecutiveSignInCount(int userId, int value);
+
+    /**
+     * 递增用户积分
+     *
+     * @param userId 用户ID
+     * @param score  积分
+     */
+    void incPointScore(int userId, int score);
 }

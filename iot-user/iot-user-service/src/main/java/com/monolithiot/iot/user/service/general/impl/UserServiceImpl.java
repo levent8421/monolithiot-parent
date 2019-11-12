@@ -241,4 +241,16 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
         val resRow = userMapper.incConsecutiveSignInCount(userId, amount);
         log.info("Inc ConsecutiveSignInCount userId=[{}], amount=[{}], rows=[{}]", userId, amount, resRow);
     }
+
+    @Override
+    public void resetConsecutiveSignInCount(int userId, int value) {
+        final int resRow = userMapper.updateConsecutiveSignInCountById(userId, value);
+        log.info("Reset User[{}] consecutiveSignInCount [{}], resRow=[{}]!", userId, value, resRow);
+    }
+
+    @Override
+    public void incPointScore(int userId, int score) {
+        final int resRow = userMapper.incPointScore(userId, score);
+        log.info("Inc user[{}], pointScore[{}], resRows = [{}]", userId, score, resRow);
+    }
 }

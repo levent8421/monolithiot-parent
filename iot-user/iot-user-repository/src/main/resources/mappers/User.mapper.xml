@@ -65,4 +65,14 @@
                     end
         where id = #{userId}
     </update>
+    <update id="updateConsecutiveSignInCountById">
+        update t_user
+        set consecutive_sign_in_count=#{value}
+        where id = #{userId}
+    </update>
+    <update id="incPointScore">
+        update t_user
+        set point_score=case when point_score is null then #{score} else (point_score + #{score}) end
+        where id = #{userId}
+    </update>
 </mapper>

@@ -1,5 +1,7 @@
 package com.monolithiot.iot.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.monolithiot.iot.commons.context.ApplicationConstants;
 import com.monolithiot.iot.commons.entity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +30,7 @@ public class SignInLog extends AbstractEntity<Integer> {
     /**
      * 登录日期
      */
+    @JsonFormat(pattern = ApplicationConstants.DateTime.DATE_FORMATER)
     @Column(name = "sign_in_date")
     private Date signInDate;
 }
