@@ -93,7 +93,9 @@ public class EmailAsyncSenderImpl extends AbstractServiceImpl<Email> implements 
             saveEmail(emailData);
             log.info("Send email success, target=[{}]!", emailData.getTarget());
         } catch (MessagingException e) {
-            log.warn("Error on send email [{}] to [{}]", emailData.getSubject(), emailData.getTarget());
+            log.warn("Error (MessagingException) on send email [{}] to [{}]", emailData.getSubject(), emailData.getTarget(), e);
+        } catch (Exception e) {
+            log.warn("Error (Exception) On Send Email [{}] to[{}]", emailData.getSubject(), emailData.getTarget(), e);
         }
     }
 
