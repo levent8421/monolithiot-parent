@@ -2,16 +2,20 @@ package com.monolithiot.iot.user.web.controller.open;
 
 import com.monolithiot.iot.commons.exception.BadRequestException;
 import com.monolithiot.iot.commons.vo.GeneralResult;
+import com.monolithiot.iot.resource.I18nResource;
+import com.monolithiot.iot.resource.locale.LocaleHolder;
 import com.monolithiot.iot.user.entity.User;
 import com.monolithiot.iot.user.service.general.UserService;
 import com.monolithiot.iot.user.service.listener.UserRegisterListener;
 import com.monolithiot.iot.user.web.vo.ResetPasswordParam;
 import com.monolithiot.iot.user.web.vo.UserRegisterParam;
+import com.monolithiot.iot.web.controller.AbstractController;
 import lombok.val;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.monolithiot.iot.commons.utils.ParamChecker.notEmpty;
@@ -28,14 +32,20 @@ import static com.monolithiot.iot.commons.utils.TextUtils.isTrimedEmpty;
  */
 @RestController
 @RequestMapping("/open/user")
-public class OpenUserController {
+public class OpenUserController extends AbstractController {
     private final UserService userService;
     private final UserRegisterListener userRegisterListener;
+    private final LocaleHolder localeHolder;
+    private final I18nResource i18nResource;
 
     public OpenUserController(UserService userService,
-                              UserRegisterListener userRegisterListener) {
+                              UserRegisterListener userRegisterListener,
+                              LocaleHolder localeHolder,
+                              I18nResource i18nResource) {
         this.userService = userService;
         this.userRegisterListener = userRegisterListener;
+        this.localeHolder = localeHolder;
+        this.i18nResource = i18nResource;
     }
 
     /**
@@ -60,11 +70,11 @@ public class OpenUserController {
      */
     private void checkAndCopyRegisterParam(UserRegisterParam param, User user) {
         Class<BadRequestException> ex = BadRequestException.class;
-        notNull(param, ex, "参数未传！");
-        notEmpty(param.getName(), ex, "用户名必填！");
-        notEmpty(param.getPassword(), ex, "密码必填！");
+        notNull(param, ex, getResource(I18nResource.NO_PARAMS));
+        notEmpty(param.getName(), ex, getResource(I18nResource.VALIDATE_REQUIRE, "username"));
+        notEmpty(param.getPassword(), ex, getResource(I18nResource.VALIDATE_REQUIRE, "password"));
         if (isTrimedEmpty(param.getEmail()) && isTrimedEmpty(param.getPhone())) {
-            throw new BadRequestException("请填写邮箱或电话其中一个！");
+            throw new BadRequestException(getResource(I18nResource.VALIDATE_REQUIRE, "phone or email"));
         }
         user.setName(param.getName());
         user.setPassword(param.getPassword());
@@ -94,12 +104,12 @@ public class OpenUserController {
      */
     private void checkAndCopyRegisterWithPhoneParam(UserRegisterParam param, User target) {
         final Class<BadRequestException> ex = BadRequestException.class;
-        notNull(param, ex, "参数未传");
-        notEmpty(param.getName(), ex, "用户名必填");
-        notEmpty(param.getPassword(), ex, "密码必填");
-        notEmpty(param.getPhone(), ex, "电话号必填");
-        notEmpty(param.getVerificationCode(), ex, "短信验证码必填");
-        notEmpty(param.getNotificationTraceId(), ex, "短信通知记录号必填");
+        notNull(param, ex, getResource(I18nResource.NO_PARAMS));
+        notEmpty(param.getName(), ex, getResource(I18nResource.VALIDATE_REQUIRE, "username"));
+        notEmpty(param.getPassword(), ex, getResource(I18nResource.VALIDATE_REQUIRE, "password"));
+        notEmpty(param.getPhone(), ex, getResource(I18nResource.VALIDATE_REQUIRE, "phone"));
+        notEmpty(param.getVerificationCode(), ex, getResource(I18nResource.VALIDATE_REQUIRE, "smsVerifyCode"));
+        notEmpty(param.getNotificationTraceId(), ex, getResource(I18nResource.VALIDATE_REQUIRE, "traceId"));
         target.setName(param.getName());
         target.setPassword(param.getPassword());
         target.setPhone(param.getPhone());
@@ -157,8 +167,13 @@ public class OpenUserController {
      */
     private void checkResetPasswordParam(ResetPasswordParam param) {
         val ex = BadRequestException.class;
-        notNull(param, ex, "参数未传！");
-        notEmpty(param.getTradeId(), ex, "TradeId is required!");
-        notEmpty(param.getPassword(), ex, "Password is required!");
+        notNull(param, ex, getResource(I18nResource.NO_PARAMS));
+        notEmpty(param.getTradeId(), ex, getResource(I18nResource.VALIDATE_REQUIRE, "traceId"));
+        notEmpty(param.getPassword(), ex, getResource(I18nResource.VALIDATE_REQUIRE, "password"));
+    }
+
+    private String getResource(String id, Object... args) {
+        final Locale locale = localeHolder.getLocale();
+        return i18nResource.getText(id, locale, args);
     }
 }

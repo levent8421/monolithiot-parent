@@ -61,6 +61,10 @@ public class ApplicationConstants {
          * Json Content Type
          */
         public static final String CONTENT_TYPE_JSON = "application/json;charset=utf-8";
+        /**
+         * Locale
+         */
+        public static final String LOCALE_HEADER_NAME = "X-Locale";
     }
 
     /**
@@ -75,6 +79,10 @@ public class ApplicationConstants {
          * 路由设置的用户ID Header名称
          */
         public static final String USER_ID_HEADER_NAME = "Zuul-Router-User-Id";
+        /**
+         * 地区
+         */
+        public static final String LOCALE_NAME = "Zuul-Router-Locale";
     }
 
     /**

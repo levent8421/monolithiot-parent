@@ -31,4 +31,8 @@ public class UserLoginDto {
      * 登录密码
      */
     private String password;
+    /**
+     * 地区信息
+     */
+    private String locale;
 }

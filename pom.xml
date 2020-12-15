@@ -13,6 +13,7 @@
         <module>iot-notification</module>
         <module>iot-templates</module>
         <module>iot-wechat</module>
+        <module>iot-resource</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -11,6 +11,8 @@ import com.monolithiot.iot.commons.utils.ParamChecker;
 import com.monolithiot.iot.commons.utils.TextUtils;
 import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.commons.vo.notification.VerifySmsCodeParam;
+import com.monolithiot.iot.resource.I18nResource;
+import com.monolithiot.iot.resource.locale.LocaleHolder;
 import com.monolithiot.iot.service.basic.impl.AbstractServiceImpl;
 import com.monolithiot.iot.service.encrypt.PasswordEncryptor;
 import com.monolithiot.iot.user.entity.User;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -47,16 +50,22 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     private final PasswordEncryptor passwordEncryptor;
     private final NotificationFeignClient notificationFeignClient;
     private final PathProp pathProp;
+    private final I18nResource i18nResource;
+    private final LocaleHolder localeHolder;
 
     public UserServiceImpl(UserMapper mapper,
                            PasswordEncryptor passwordEncryptor,
                            NotificationFeignClient notificationFeignClient,
-                           PathProp pathProp) {
+                           PathProp pathProp,
+                           I18nResource i18nResource,
+                           LocaleHolder localeHolder) {
         super(mapper);
         this.userMapper = mapper;
         this.passwordEncryptor = passwordEncryptor;
         this.notificationFeignClient = notificationFeignClient;
         this.pathProp = pathProp;
+        this.i18nResource = i18nResource;
+        this.localeHolder = localeHolder;
     }
 
     @Override
@@ -74,7 +83,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     public AccessToken login4Token(UserLoginDto param) {
         User user = userMapper.selectByLoginName(param.getLoginName());
         if (user == null) {
-            throw new BadRequestException("用户名或密码错误");
+            throw new BadRequestException(getResource(I18nResource.PASSWORD_ERROR));
         }
         checkUserPassword(user, param.getPassword());
         return UserAccessToken.fromUser(user, DEFAULT_ACCESS_TOKEN_EXPIRE_IN);
@@ -99,7 +108,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
      */
     private void checkUserPassword(User user, String password) {
         if (!passwordEncryptor.matches(user.getPassword(), password)) {
-            throw new BadRequestException("用户名或密码错误");
+            throw new BadRequestException(getResource(I18nResource.PASSWORD_ERROR));
         }
     }
 
@@ -112,13 +121,13 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
         User existsUser = userMapper.selectByNameOrPhoneOrEmail(user.getName(), user.getPhone(), user.getEmail());
         if (existsUser != null) {
             if (TextUtils.compareIgnoreCase(existsUser.getName(), user.getName())) {
-                throw new BadRequestException("用户名已被注册!");
+                throw new BadRequestException(getResource(I18nResource.DUPLICATE_NAME));
             }
             if (TextUtils.compareIgnoreCase(existsUser.getPhone(), user.getPhone())) {
-                throw new BadRequestException("电话号已被注册!");
+                throw new BadRequestException(getResource(I18nResource.DUPLICATE_PHONE));
             }
             if (TextUtils.compareIgnoreCase(existsUser.getEmail(), user.getEmail())) {
-                throw new BadRequestException("邮箱已被注册!");
+                throw new BadRequestException(getResource(I18nResource.DUPLICATE_EMAIL));
             }
         }
     }
@@ -127,7 +136,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     public User registerWithPhone(User user, String notificationTraceId, String verificationCode) {
         checkUserExists(user);
         if (!checkSmsVerifyCode(verificationCode, notificationTraceId)) {
-            throw new BadRequestException("验证码错误");
+            throw new BadRequestException(getResource(I18nResource.BAD_VERIFY_CODE));
         }
         user.setPassword(passwordEncryptor.encode(user.getPassword()));
         user.setGender(User.GENDER_UNKNOWN);
@@ -160,7 +169,7 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
             user.setAvatar(filename);
             updateById(user);
         } catch (IOException e) {
-            throw new InternalServerErrorException("保存头像文件失败！", e);
+            throw new InternalServerErrorException(getResource(I18nResource.ERROR_ON_SAVE_AVATAR), e);
         }
         resolvePath(user);
         return user.getAvatar();
@@ -192,9 +201,9 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     @Override
     public void bindEmailByTraceId(String traceId) {
         val email = notificationFeignClient.findEmailByTraceId(traceId);
-        ParamChecker.notNull(email.getUserId(), BadRequestException.class, "该链接无效！");
+        ParamChecker.notNull(email.getUserId(), BadRequestException.class, i18nResource.getText(I18nResource.INVALIDATE_LINK));
         if (!Objects.equals(email.getIntention(), EmailDto.INTENTION_UPDATE_EMAIL)) {
-            throw new BadRequestException("该邮件不能作为更新邮箱地址验证邮件使用！");
+            throw new BadRequestException(getResource(I18nResource.INVALIDATE_LINK));
         }
         val user = require(email.getUserId());
         user.setEmail(email.getTarget());
@@ -213,14 +222,14 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     public void resetPasswordByEmailTradeId(String tradeId, String password) {
         val email = notificationFeignClient.findEmailByTraceId(tradeId);
         if (email == null) {
-            throw new BadRequestException("链接无效或已过期！");
+            throw new BadRequestException(getResource(I18nResource.INVALIDATE_LINK));
         }
         val eamil = email.getTarget();
         val user = findByEmail(eamil);
         if (user == null) {
-            throw new BadRequestException("该邮箱已失效！");
+            throw new BadRequestException(getResource(I18nResource.INVALIDATE_EMAIL));
         }
-        user.setPassword(passwordEncryptor.encode(password));
+        user.setPassword(getResource(password));
         updateById(user);
     }
 
@@ -252,5 +261,10 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
     public void incPointScore(int userId, int score) {
         final int resRow = userMapper.incPointScore(userId, score);
         log.info("Inc user[{}], pointScore[{}], resRows = [{}]", userId, score, resRow);
+    }
+
+    private String getResource(String id, Object... args) {
+        final Locale locale = localeHolder.getLocale();
+        return i18nResource.getText(id, locale, args);
     }
 }

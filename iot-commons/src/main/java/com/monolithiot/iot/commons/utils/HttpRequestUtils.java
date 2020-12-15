@@ -42,6 +42,16 @@ public class HttpRequestUtils {
     }
 
     /**
+     * 从请求中获取地区信息
+     *
+     * @param request request
+     * @return 地区名称
+     */
+    public static String obtainLocaleNameFromRequest(HttpServletRequest request) {
+        return request.getHeader(ApplicationConstants.Router.LOCALE_NAME);
+    }
+
+    /**
      * 从请求中获取用户ID
      *
      * @param request 请求

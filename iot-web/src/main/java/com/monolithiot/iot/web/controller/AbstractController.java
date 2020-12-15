@@ -2,10 +2,12 @@ package com.monolithiot.iot.web.controller;
 
 import com.monolithiot.iot.commons.exception.PermissionDeniedException;
 import com.monolithiot.iot.commons.utils.HttpRequestUtils;
+import com.monolithiot.iot.resource.LocaleTable;
 import lombok.val;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import java.util.Locale;
 
 /**
  * Create by 郭文梁 2019/5/18 0018 12:38
@@ -65,6 +67,28 @@ public abstract class AbstractController {
      */
     protected String getCurrentUserName(HttpServletRequest request) {
         return HttpRequestUtils.obtainLoginNameFromRequest(request);
+    }
+
+    /**
+     * 获取当前地区名称
+     *
+     * @param request request
+     * @return locale name
+     */
+    protected String getLocaleName(HttpServletRequest request) {
+        return HttpRequestUtils.obtainLocaleNameFromRequest(request);
+    }
+
+    /**
+     * Get Locale
+     *
+     * @param request request
+     * @return locale
+     */
+    protected Locale getLocale(HttpServletRequest request) {
+        final String localeName = getLocaleName(request);
+        Locale locale = LocaleTable.getInstance().get(localeName);
+        return locale == null ? LocaleTable.getInstance().getDefault() : locale;
     }
 
     /**

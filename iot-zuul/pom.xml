@@ -67,6 +67,11 @@
             <artifactId>spring-cloud-starter-feign</artifactId>
             <version>1.4.7.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.monolithiot.iot</groupId>
+            <artifactId>iot-resource</artifactId>
+            <version>${sub-model-version}</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

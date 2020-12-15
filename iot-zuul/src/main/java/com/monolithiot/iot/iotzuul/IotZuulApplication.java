@@ -1,5 +1,6 @@
 package com.monolithiot.iot.iotzuul;
 
+import com.monolithiot.iot.commons.context.ApplicationConstants;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -19,7 +20,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @EnableDiscoveryClient
 @EnableFeignClients
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class, scanBasePackages = ApplicationConstants.Context.COMPONENT_PACKAGE_NAME)
 public class IotZuulApplication {
     public static void main(String[] args) {
         SpringApplication.run(IotZuulApplication.class, args);

@@ -10,6 +10,8 @@ import com.monolithiot.iot.commons.vo.GeneralResult;
 import com.monolithiot.iot.iotzuul.encrypt.AccessTokenEncoder;
 import com.monolithiot.iot.iotzuul.feign.UserFeignClient;
 import com.monolithiot.iot.iotzuul.prop.AuthorizationProp;
+import com.monolithiot.iot.resource.I18nResource;
+import com.monolithiot.iot.resource.LocaleTable;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import org.springframework.util.PathMatcher;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -46,17 +49,21 @@ public class AccessTokenFilter extends AbstractZuulFilter {
     private final ObjectMapper objectMapper;
     private final UserFeignClient userFeignClient;
     private final AccessTokenEncoder accessTokenEncoder;
+    private final I18nResource i18nResource;
+
 
     public AccessTokenFilter(AuthorizationProp authorizationProp,
                              PathMatcher pathMatcher,
                              ObjectMapper objectMapper,
                              UserFeignClient userFeignClient,
-                             AccessTokenEncoder accessTokenEncoder) {
+                             AccessTokenEncoder accessTokenEncoder,
+                             I18nResource i18nResource) {
         this.authorizationProp = authorizationProp;
         this.pathMatcher = pathMatcher;
         this.objectMapper = objectMapper;
         this.userFeignClient = userFeignClient;
         this.accessTokenEncoder = accessTokenEncoder;
+        this.i18nResource = i18nResource;
     }
 
     @Override
@@ -76,6 +83,7 @@ public class AccessTokenFilter extends AbstractZuulFilter {
 
     @Override
     public Object run() throws ZuulException {
+        readLocaleIntoRequest();
         final String requestPath = getRequestPath();
         if (doLoginFilter(requestPath)) {
             //执行登陆操作
@@ -94,6 +102,13 @@ public class AccessTokenFilter extends AbstractZuulFilter {
             }
         }
         return null;
+    }
+
+    private void readLocaleIntoRequest() {
+        final RequestContext requestContext = currentContext();
+        final String locale = requestContext.getRequest().getHeader(ApplicationConstants.Http.LOCALE_HEADER_NAME);
+        log.debug("Set local name [{}] into request!", locale);
+        requestContext.addZuulRequestHeader(ApplicationConstants.Router.LOCALE_NAME, locale);
     }
 
     /**
@@ -139,7 +154,14 @@ public class AccessTokenFilter extends AbstractZuulFilter {
         final String method = request.getMethod();
         if (pathMatcher.match(loginPath, path) && HttpMethod.POST.matches(method)) {
             final String requestBody = HttpRequestUtils.stringBody(request);
-            doLogin(requestBody);
+            final String localeName = request.getHeader(ApplicationConstants.Http.LOCALE_HEADER_NAME);
+            Locale locale;
+            try {
+                locale = LocaleTable.getInstance().get(localeName);
+            } catch (Exception e) {
+                locale = LocaleTable.getInstance().getDefault();
+            }
+            doLogin(requestBody, locale, localeName);
             return true;
         } else {
             return false;
@@ -150,11 +172,13 @@ public class AccessTokenFilter extends AbstractZuulFilter {
      * 执行登陆操作
      *
      * @param requestBody 请求体
+     * @param locale      locale
      * @throws ZuulException Zuu;异常
      */
-    private void doLogin(String requestBody) throws ZuulException {
+    private void doLogin(String requestBody, Locale locale, String localeName) throws ZuulException {
         UserLoginDto userLoginDto = UserLoginDto.fromJson(requestBody);
-        if (checkLoginParam(userLoginDto)) {
+        userLoginDto.setLocale(localeName);
+        if (checkLoginParam(userLoginDto, locale)) {
             final GeneralResult<AccessToken> res = userFeignClient.login(userLoginDto);
             if (Objects.equals(res.getCode(), HttpStatus.SC_OK)) {
                 final AccessToken accessToken = res.getData();
@@ -173,17 +197,17 @@ public class AccessTokenFilter extends AbstractZuulFilter {
      * @return 是否合法
      * @throws ZuulException ZuulException
      */
-    private boolean checkLoginParam(UserLoginDto userLoginDto) throws ZuulException {
+    private boolean checkLoginParam(UserLoginDto userLoginDto, Locale locale) throws ZuulException {
         if (userLoginDto == null) {
-            sendJsonResponse(HttpStatus.SC_BAD_REQUEST, GeneralResult.badRequest("参数未传"), objectMapper);
+            sendJsonResponse(HttpStatus.SC_BAD_REQUEST, GeneralResult.badRequest(getResource(I18nResource.NO_PARAMS, locale)), objectMapper);
             return false;
         }
         if (TextUtils.isTrimedEmpty(userLoginDto.getLoginName())) {
-            sendJsonResponse(HttpStatus.SC_BAD_REQUEST, GeneralResult.badRequest("登录名必填!"), objectMapper);
+            sendJsonResponse(HttpStatus.SC_BAD_REQUEST, GeneralResult.badRequest(getResource(I18nResource.VALIDATE_REQUIRE, locale, "LoginName")), objectMapper);
             return false;
         }
         if (TextUtils.isTrimedEmpty(userLoginDto.getPassword())) {
-            sendJsonResponse(HttpStatus.SC_BAD_REQUEST, GeneralResult.badRequest("密码必填!"), objectMapper);
+            sendJsonResponse(HttpStatus.SC_BAD_REQUEST, GeneralResult.badRequest(getResource(I18nResource.VALIDATE_REQUIRE, locale, "Password")), objectMapper);
             return false;
         }
         return true;
@@ -263,5 +287,9 @@ public class AccessTokenFilter extends AbstractZuulFilter {
                 accessToken.getLoginName());
         context.addZuulRequestHeader(ApplicationConstants.Router.USER_ID_HEADER_NAME,
                 String.valueOf(accessToken.getUserId()));
+    }
+
+    private String getResource(String id, Locale local, Object... args) {
+        return i18nResource.getText(id, local, args);
     }
 }

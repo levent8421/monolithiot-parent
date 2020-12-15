@@ -46,5 +46,10 @@
             <artifactId>iot-repository</artifactId>
             <version>${sub-model-version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.monolithiot.iot</groupId>
+            <artifactId>iot-resource</artifactId>
+            <version>${sub-model-version}</version>
+        </dependency>
     </dependencies>
 </project>
